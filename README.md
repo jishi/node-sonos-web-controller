@@ -9,10 +9,15 @@ Using node.js as backend, that will keep track of the state of the players, and 
 
 Main focus will be to support the following:
 
-Zone management
-Volume control
-Transport control (play/pause, rwd, fwd, seek)
-Queue listing
-Browsing favorites
+ * Zone management
+ * Volume control
+ * Transport control (play/pause, rwd, fwd, seek)
+ * Queue listing
+ * Browsing favorites
 
-Main target is to be able to run this on a raspberry pi, but any node.js compatible platform should work. As of today the GUI only renders correctly in Firefox 19, and I will only focus on supporting Chrome and Firefox (since they are cross platform).
+Main target is to be able to run this on a raspberry pi, but any node.js compatible platform should work. As of today the GUI only renders correctly in Firefox 19, and I will only focus on supporting:
+
+* Chrome latest version (25 as of today)
+* Firefox latest version (19 as of today)
+
+
