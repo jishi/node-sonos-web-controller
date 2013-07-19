@@ -1,0 +1,10 @@
+{
+  "name": "sonos-web-controller",
+  "version": "0.0.1",
+  "description": "Web based controller for your Sonos system",
+  "author": "Jimmy Shimizu <jimmy@shimizu.se>",
+  "dependencies": {
+    "sonos-discovery": "git+https://github.com/jishi/node-sonos-discovery.git#master"
+  },
+  "engine": "node 0.8.x"
+}
