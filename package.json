@@ -4,7 +4,9 @@
   "description": "Web based controller for your Sonos system",
   "author": "Jimmy Shimizu <jimmy@shimizu.se>",
   "dependencies": {
-    "sonos-discovery": "git+https://github.com/jishi/node-sonos-discovery.git#master"
+    "sonos-discovery": "git+https://github.com/jishi/node-sonos-discovery.git#master",
+    "node-static": "0.7.x",
+    "socket.io": "0.9.x"
   },
   "engine": "node 0.8.x"
 }
