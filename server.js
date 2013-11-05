@@ -17,7 +17,15 @@ var server = http.createServer(function (req, res) {
 var socketServer = io.listen(server);
 
 socketServer.sockets.on('connection', function (socket) {
-	socket.emit('topology-change', discovery.getZones());
+	// Send it in a better format
+	var players = [];
+	for (var uuid in discovery.players) {
+		var player = discovery.players[uuid];
+		players.push(player.convertToSimple());
+	}
+	
+	socket.emit('topology-change', players);
+
   	socket.on('transport-state', function (data) {
 	    // find player based on uuid
 	    var player = discovery.getPlayerByUUID(data.uuid);
@@ -28,11 +36,36 @@ socketServer.sockets.on('connection', function (socket) {
 	    console.log(data)
 	    player[data.state]();
   	});
+
+  	socket.on('group-volume', function (data) {
+	    // find player based on uuid
+	    var player = discovery.getPlayerByUUID(data.uuid);
+	    if (!player) return;
+
+	    // invoke action
+	    console.log(data)
+	    player.groupSetVolume(data.volume);
+  	});
+
+  	socket.on("error", function (e) {
+  		console.log(e);
+  	})
 });
 
 discovery.on('topology-change', function (data) {
-	socketServer.sockets.emit('topology-change', data);
+	var players = [];
+	for (var uuid in discovery.players) {
+		var player = discovery.players[uuid];
+		players.push(player.convertToSimple());
+	}
+	socketServer.sockets.emit('topology-change', players);
 });
+
+discovery.on('transport-state', function (data) {
+	socketServer.sockets.emit('transport-state', data);
+});
+
+
 
 // Attach handler for socket.io
 

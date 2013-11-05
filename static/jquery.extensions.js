@@ -1,6 +1,6 @@
 jQuery.fn.extend({
 	
-	volumeSlider: function (discovery) {
+	volumeSlider: function (options) {
 		var state = {
 			originalX: 0,
 			maxX: 0,
@@ -20,12 +20,10 @@ jQuery.fn.extend({
 
 			// calculate percentage
 			var volume = Math.floor(nextX / state.maxX * 100);
-			if (volume != state.volume) {
-				// change, trigger
-				console.log(volume)				
+			if (volume != state.volume && options.onvolumechange) {
+				options.onvolumechange(state.volume);			
 			}
 			state.volume = volume;
-
 		}
 
 		$('img', this).on('mousedown', function (e) {
@@ -43,20 +41,24 @@ jQuery.fn.extend({
 		});
 	},
 
-	reRenderZones: function (zones) {
-		console.log(zones);
+	reRenderZones: function () {
+		
 		var oldWrapper = document.getElementById('zone-wrapper');
 		var newWrapper = oldWrapper.cloneNode(false);
-		zones.forEach(function (zone) {
+			
+		for (var groupUUID in grouping) {
 			var ul = document.createElement('ul');
-			ul.uuid = zone.uuid;
-			ul.className = 'zone';
+			ul.id = groupUUID;
+
+			if (ul.id == currentState.selectedZone)
+				ul.className = "selected";
 
 			var groupButton = document.createElement('button');
 			groupButton.textContent = "Group";
 			ul.appendChild(groupButton);
 
-			zone.members.forEach(function (player) {
+			grouping[groupUUID].forEach(function (playerUUID) {
+				var player = players[playerUUID];
 				var li = document.createElement('li');
 				var span = document.createElement('span');
 				span.textContent = player.roomName;
@@ -65,9 +67,8 @@ jQuery.fn.extend({
 			});
 
 			newWrapper.appendChild(ul);	
-		});
+		}
 		oldWrapper.parentNode.replaceChild(newWrapper, oldWrapper);
 	}
-
 
 });

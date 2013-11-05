@@ -17,7 +17,7 @@ Main focus will be to support the following:
 
 Main target is to be able to run this on a raspberry pi, but any node.js compatible platform should work. As of today the GUI only renders correctly in Firefox 19, and I will only focus on supporting:
 
-* Chrome latest version (25 as of today)
-* Firefox latest version (19 as of today)
+* Chrome latest version (30 as of today)
+* Firefox latest version (25 as of today)
 
 
