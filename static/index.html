@@ -53,9 +53,45 @@
 				background-image: -moz-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
 				background-image: -webkit-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
 				background-image: -ms-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
+				margin: 0;
+				color: #0A97FF;	
+				font-size: 15px;	
+				text-shadow: #111 0px -1px;
 
-				color: #0A97FF;		
+			}
 
+			#status-container h4#now-playing {
+				background-image: -moz-linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
+				background-image: -webkit-linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
+				border-bottom: 1px solid rgb(1,36,64);
+				color: #fff;
+			}
+
+			#status-container div {
+				padding-top: 40px;
+				padding-left: 20px;
+				background-image: -moz-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 90%);
+				background-image: -webkit-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 90%);
+				border-top: 1px solid rgb(37,85,125);
+			}			
+
+			#status-container h6 {
+				color: rgb(4,90,218);
+				font-weight: normal;
+				font-size: 14px;
+				margin: 0;
+			}
+
+			#status-container h5 {
+				color: rgb(4,90,218);
+				font-size: 14px;
+				margin: 0;
+			}
+
+			#status-container p {
+				margin: 0;
+				margin-bottom: 20px;
+				font-size: 14px;
 			}
 
 			/* rounded containers */ 
@@ -76,13 +112,18 @@
 			#status-container,
 			#music-sources-container {
 				width: -webkit-calc((100% - 15px) / 3);
-				width: calc((100vw - 22px) / 3);				
+				width: calc(40% - 4px);				
 				display: inline-block;
 				height: 100%;
-				height: calc(100vh - 105px);				
+				height: calc(100vd - 105px);				
 				background: #021B2E;
 				vertical-align: top;
 				overflow: hidden;				
+			}
+
+			#zone-container,
+			#music-sources-container {
+				width: calc(30% - 4px);
 			}
 
 			#zone-container h4,
@@ -163,6 +204,8 @@
 				height: 22px;
 				background-image: url(images/tc_progress_container_center.png);
 				font-size: 11px;
+				color: #666;
+				text-shadow: #111 0px -1px;
 			}
 
 			#position-info .content span,
@@ -181,7 +224,7 @@
 			}
 
 			#position-bar-scrubber {
-				margin-top: -13px;
+				margin-top: -17px;
 			}
 
 			#position-bar {
@@ -287,11 +330,18 @@
 			<div id="zone-wrapper"></div>
 		</div>
 		<div id="status-container">
-			<h4>NOW PLAYING</h4>
+			<h4 id="now-playing">NOW PLAYING</h4>
 			<div>
-				<h5 id="track"></h5>
-				<h5 id="artist"></h5>
-				<h5 id="album"></h5>
+				<h6>Track</h6>
+				<p id="track"></p>
+				<h6>Artist</h6>
+				<p id="artist"></p>
+				<h6>Album</h6>
+				<p id="album"></p>
+			
+
+				<h5>Next</h5>
+				<p id="next-track">Foo - Foo</p>
 			</div>
 
 			<h4>QUEUE</h4>
@@ -352,6 +402,8 @@
 		    console.log(grouping, players);
 
 		    $('#zone-container').reRenderZones();
+		    updateControllerState();
+			updateCurrentStatus();
 		});
 
 		socket.on('transport-state', function (player) {
@@ -441,14 +493,18 @@
 
 			clearInterval(positionInterval);
 			
-			positionInterval = setInterval(function () {
-				var elapsed = selectedZone.state.elapsedTime + (new Date().valueOf() - selectedZone.stateTime)/1000;
-				document.getElementById("countup").textContent = toFormattedTime(elapsed);
-				var remaining = selectedZone.state.currentTrack.duration - elapsed;
-				document.getElementById("countdown").textContent = "-" + toFormattedTime(remaining);
-				var positionPercent = Math.round(elapsed / selectedZone.state.currentTrack.duration * 100);
-				setPositionPercent(positionPercent);
-			}, 1000);
+			positionInterval = setInterval(updatePosition, 500);
+			updatePosition();
+		}
+
+		function updatePosition() {
+			var selectedZone = players[currentState.selectedZone];
+			var elapsed = selectedZone.state.elapsedTime + (new Date().valueOf() - selectedZone.stateTime)/1000;
+			document.getElementById("countup").textContent = toFormattedTime(elapsed);
+			var remaining = selectedZone.state.currentTrack.duration - elapsed;
+			document.getElementById("countdown").textContent = "-" + toFormattedTime(remaining);
+			var positionPercent = Math.floor(elapsed / selectedZone.state.currentTrack.duration * 100);
+			setPositionPercent(positionPercent);
 		}
 
 		function updateControllerState() {
@@ -502,7 +558,7 @@
 			  chunks.push(zpad(minutes, 1));
 			  remainingTime -= minutes * 60;
 			  // seconds
-			  chunks.push(zpad(Math.round(remainingTime), 2))			  
+			  chunks.push(zpad(Math.floor(remainingTime), 2))
 			  return chunks.join(':');
 		}
 
