@@ -1,7 +1,7 @@
 Sonos Web Controller
 ====================
 
-NOTE! THIS IS A WORK IN PROGRESS! Things might end up completely rewritten, beware of that i fyou try and fork this repository.
+NOTE! THIS IS A WORK IN PROGRESS! Things might end up completely rewritten, beware of that if you try and fork this repository.
 
 As a subtitute for the perl-based controller (www.purple.org) this project is aimed at giving similar controller as the native one, but in a browser.
 
@@ -15,9 +15,11 @@ Main focus will be to support the following:
  * Queue listing
  * Browsing favorites
 
-Main target is to be able to run this on a raspberry pi, but any node.js compatible platform should work. As of today the GUI only renders correctly in Firefox 19, and I will only focus on supporting:
+Main target is to be able to run this on a raspberry pi, but any node.js compatible platform should work. I will only focus on supporting the following browsers:
 
 * Chrome latest version (30 as of today)
 * Firefox latest version (25 as of today)
 
+For a screenshot of current progress, see: `http://upload.grabbarna.se/files/sonos-web-controller.png`
 
+Currently, prev, next, play/pause and the progress bar works. Group volume works as well, but not as expected (and doesn't update). Track info, player state and progress bar updates instantly when controlled from another device, which was one of the main goals with this project.
