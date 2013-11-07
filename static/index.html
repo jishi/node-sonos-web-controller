@@ -70,8 +70,9 @@
 			#status-container div {
 				padding-top: 40px;
 				padding-left: 20px;
-				background-image: -moz-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 90%);
-				background-image: -webkit-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 90%);
+				padding-bottom: 1px;
+				background-image: -moz-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
+				background-image: -webkit-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
 				border-top: 1px solid rgb(37,85,125);
 			}			
 
@@ -115,7 +116,7 @@
 				width: calc(40% - 4px);				
 				display: inline-block;
 				height: 100%;
-				height: calc(100vd - 105px);				
+				height: calc(100vh - 105px);
 				background: #021B2E;
 				vertical-align: top;
 				overflow: hidden;				
@@ -499,11 +500,15 @@
 
 		function updatePosition() {
 			var selectedZone = players[currentState.selectedZone];
-			var elapsed = selectedZone.state.elapsedTime + (new Date().valueOf() - selectedZone.stateTime)/1000;
+			var elapsedMillis = selectedZone.state.elapsedTime*1000 + (new Date().valueOf() - selectedZone.stateTime);
+			
+			var elapsed = Math.floor(elapsedMillis/1000);
 			document.getElementById("countup").textContent = toFormattedTime(elapsed);
 			var remaining = selectedZone.state.currentTrack.duration - elapsed;
 			document.getElementById("countdown").textContent = "-" + toFormattedTime(remaining);
-			var positionPercent = Math.floor(elapsed / selectedZone.state.currentTrack.duration * 100);
+			console.log(elapsedMillis, selectedZone.state.currentTrack.duration*1000)
+			var positionPercent = elapsedMillis / (selectedZone.state.currentTrack.duration*1000)*100;
+			console.log(positionPercent)
 			setPositionPercent(positionPercent);
 		}
 
