@@ -17,7 +17,7 @@ Main focus will be to support the following:
 
 Main target is to be able to run this on a raspberry pi, but any node.js compatible platform should work. I will only focus on supporting the following browsers:
 
-* Chrome latest version (30 as of today)
+* Chrome latest beta version (31 as of today)
 * Firefox latest version (25 as of today)
 
 For a screenshot of current progress, see: `http://upload.grabbarna.se/files/sonos-web-controller.png`

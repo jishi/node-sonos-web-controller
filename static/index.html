@@ -2,10 +2,10 @@
 <html>
 	<head>
 		<style>
-			html {				
+			html {
 			}
 			body {
-				background: #515151;				
+				background: #515151;
 				background-image: linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 				background-image: -moz-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 				background-image: -webkit-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
@@ -54,8 +54,8 @@
 				background-image: -webkit-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
 				background-image: -ms-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
 				margin: 0;
-				color: #0A97FF;	
-				font-size: 15px;	
+				color: #0A97FF;
+				font-size: 15px;
 				text-shadow: #111 0px -1px;
 
 			}
@@ -74,7 +74,7 @@
 				background-image: -moz-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
 				background-image: -webkit-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
 				border-top: 1px solid rgb(37,85,125);
-			}			
+			}
 
 			#status-container h6 {
 				color: rgb(4,90,218);
@@ -95,7 +95,7 @@
 				font-size: 14px;
 			}
 
-			/* rounded containers */ 
+			/* rounded containers */
 			#top-control,
 			#zone-container,
 			#status-container,
@@ -108,18 +108,18 @@
 				text-align: justify;
 				height: calc(100% - 105px);
 			}
-			
+
 			#zone-container,
 			#status-container,
 			#music-sources-container {
 				width: -webkit-calc((100% - 15px) / 3);
-				width: calc(40% - 4px);				
+				width: calc(40% - 4px);
 				display: inline-block;
 				height: 100%;
 				height: calc(100vh - 105px);
 				background: #021B2E;
 				vertical-align: top;
-				overflow: hidden;				
+				overflow: hidden;
 			}
 
 			#zone-container,
@@ -160,7 +160,8 @@
 				top: 28px;
 				left: 50px;
 				border-radius: 15px;
-				border: 1px inset #454545;
+				border-top: 1px solid #303030;
+				border-bottom: 1px solid #707070;
 				position: absolute;
 
 				background-image: -moz-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
@@ -225,16 +226,15 @@
 			}
 
 			#position-bar-scrubber {
-				margin-top: -17px;
+				margin-top: -16px;
 			}
 
 			#position-bar {
 				height: 4px;
 				width: 150px;
-				border-radius: 3px;				
-				border: 1px inset #252525;
-				background-image: -moz-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
-				background-image: -webkit-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
+				border-radius: 3px;
+				border-top: 1px solid #101010;
+				border-bottom: 1px solid #606060;
 			}
 
 			#zone-wrapper ul {
@@ -255,13 +255,13 @@
 			#zone-wrapper ul.selected {
 				background: #0A4069;
 				background-image: -moz-linear-gradient(bottom, #0E568D 80%, #096EB7 95%);
-				background-image: -webkit-linear-gradient(bottom, #0E568D 80%, #096EB7 95%);			
+				background-image: -webkit-linear-gradient(bottom, #0E568D 80%, #096EB7 95%);
 			}
 
 			#zone-wrapper ul button {
-				position: absolute;	
+				position: absolute;
 				right: 10px;
-				padding: 3px 10px 4px; 
+				padding: 3px 10px 4px;
 				background-image: -moz-linear-gradient(bottom, #05375F 5%, #084E86 95%);
 				background-image: -webkit-linear-gradient(bottom, #05375F 5%, #084E86 95%);
 				color: #fff;
@@ -273,11 +273,11 @@
 			#zone-wrapper ul button:active {
 				border: 1px inset #023E5F;
 				background-image: -moz-linear-gradient(bottom, #084E86 5%, #05375F 95%);
-				background-image: -webkit-linear-gradient(bottom, #05375F 5%, #084E86 95%);			
+				background-image: -webkit-linear-gradient(bottom, #05375F 5%, #084E86 95%);
 			}
 
 			#zone-wrapper ul li {
-				list-style: url(images/wdcr_zm_ic_bedroom.png);	
+				list-style: url(images/wdcr_zm_ic_bedroom.png);
 			}
 
 			#zone-wrapper ul span {
@@ -289,8 +289,8 @@
 		</style>
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
-		  var socket = io.connect('/');		  
-		</script>		
+		  var socket = io.connect('/');
+		</script>
 	</head>
 <body>
 	<header id="top-control">
@@ -310,19 +310,19 @@
 			<div class="content">
 				<img src="images/tc_progress_repeat_normal_off.png" />
 				<img src="images/tc_progress_shuffle_normal_off.png" />
-				
+
 				<span id="countup">0:00</span>
 					<div id="position-info-control">
 						<div id="position-bar">
 							<img id="position-bar-scrubber" src="images/tc_progressbar_scrubber_normal.png" />
-						</div>				
+						</div>
 					</div>
 				<span id="countdown">-0:00</span>
-				
+
 				<img src="images/tc_progress_crossfade_normal_off.png" />
 				<img src="images/tc_progress_equalizer_normal.png" />
 			</div>
-			
+
 		</div>
 	</header>
 	<div id="column-container">
@@ -339,7 +339,7 @@
 				<p id="artist"></p>
 				<h6>Album</h6>
 				<p id="album"></p>
-			
+
 
 				<h5>Next</h5>
 				<p id="next-track">Foo - Foo</p>
@@ -350,7 +350,7 @@
 		</div>
 		<div id="music-sources-container">
 			<h4>Select a music source</h4>
-			<img class="bloom" src="images/s_bloom.png" />			
+			<img class="bloom" src="images/s_bloom.png" />
 		</div>
 	</div>
 
@@ -428,25 +428,25 @@
 
 			console.log(this.id)
 			var ul = this;
-			
+
 			currentState.selectedZone = this.id;
 			var zone = $(this);
-			
+
 			zone.addClass('selected');
 			zone.siblings().removeClass('selected');
 
 			// Update controls with status
-			
+
 			updateControllerState();
 			updateCurrentStatus();
-			
 
-			
+
+
 		});
 
 		$('#play-pause').on('click', function () {
-			
-			var action; 
+
+			var action;
 			// Find state of current player
 			var player = players[currentState.selectedZone];
 			if (player.state.zoneState == "PLAYING" ) {
@@ -493,7 +493,7 @@
 			document.getElementById("album").textContent = selectedZone.state.currentTrack.album;
 
 			clearInterval(positionInterval);
-			
+
 			positionInterval = setInterval(updatePosition, 500);
 			updatePosition();
 		}
@@ -516,9 +516,9 @@
 			console.log(players[currentState.selectedZone])
 			var state = players[currentState.selectedZone].state.zoneState;
 			var playPauseButton = $("#play-pause");
-			
+
 			if (state == "PLAYING") {
-				// Is play state, switch to pause			
+				// Is play state, switch to pause
 				playPauseButton.attr('src', '/images/pause_normal.png');
 			} else {
 				// Is play state, switch to pause
@@ -541,7 +541,7 @@
 			positionScrubber.style.marginLeft = offset + "px";
 
 		}
-	
+
 
 		function toFormattedTime(seconds) {
 
