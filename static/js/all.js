@@ -1,16 +1,15 @@
 "use strict";
-var currentState = {
-	selectedZone: null,
-	zoneInfo: null,
-	masterVolume: 0,
-	setMasterVolume: function (volume) {
 
+var Sonos = {
+	currentState: {
+		selectedZone: null,
+		zoneInfo: null,
+		masterVolume: 0
 	},
+	grouping: {},
+	players: {},
+	positionInterval: null
 };
-
-var grouping = {};
-var players = {};
-var positionInterval;
 
 ///
 /// GUI Init
@@ -18,7 +17,7 @@ var positionInterval;
 
 var GUI = {
 	masterVolume: volumeSlider(document.getElementById('master-volume'), function (volume) {
-			socket.emit('group-volume', {uuid: currentState.selectedZone, volume: volume});
+			socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: volume});
 		})
 };
 
@@ -26,21 +25,21 @@ var GUI = {
 /// socket events
 ///
 socket.on('topology-change', function (data) {
-	grouping = {};
+	Sonos.grouping = {};
 	var stateTime = new Date().valueOf();
 	data.forEach(function (player) {
 		player.stateTime = stateTime;
-    	players[player.uuid] = player;
-    	if (!grouping[player.coordinator]) grouping[player.coordinator] = [];
-    	grouping[player.coordinator].push(player.uuid);
+    	Sonos.players[player.uuid] = player;
+    	if (!Sonos.grouping[player.coordinator]) Sonos.grouping[player.coordinator] = [];
+    	Sonos.grouping[player.coordinator].push(player.uuid);
 
     	// pre select a group
-    	if (!currentState.selectedZone) {
-    		currentState.selectedZone = player.coordinator;
+    	if (!Sonos.currentState.selectedZone) {
+    		Sonos.currentState.selectedZone = player.coordinator;
     	}
     });
 
-    console.log(grouping, players);
+    console.log(Sonos.grouping, Sonos.players);
 
     reRenderZones();
     updateControllerState();
@@ -50,9 +49,9 @@ socket.on('topology-change', function (data) {
 socket.on('transport-state', function (player) {
     console.log(player);
     player.stateTime = new Date().valueOf();
-    players[player.uuid] = player;
+    Sonos.players[player.uuid] = player;
     reRenderZones();
-    var selectedZone = players[currentState.selectedZone];
+    var selectedZone = Sonos.players[Sonos.currentState.selectedZone];
 	console.log(selectedZone)
  	updateControllerState();
 	updateCurrentStatus();
@@ -76,9 +75,9 @@ document.getElementById('zone-container').addEventListener('click', function (e)
 
 	if (!zone) return;
 
-	document.getElementById(currentState.selectedZone).classList.remove('selected');
+	document.getElementById(Sonos.currentState.selectedZone).classList.remove('selected');
 
-	currentState.selectedZone = zone.id;	
+	Sonos.currentState.selectedZone = zone.id;	
 	zone.classList.add('selected');
 	// Update controls with status
 
@@ -93,26 +92,26 @@ document.getElementById('play-pause').addEventListener('click', function () {
 
 	var action;
 	// Find state of current player
-	var player = players[currentState.selectedZone];
+	var player = Sonos.players[Sonos.currentState.selectedZone];
 	if (player.state.zoneState == "PLAYING" ) {
 		action = 'pause';
 	} else {
 		action = 'play';
 	}
 
-	console.log(action, currentState)
-	socket.emit('transport-state', { uuid: currentState.selectedZone, state: action });
+	console.log(action, Sonos.currentState)
+	socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 
 document.getElementById('next').addEventListener('click', function () {
 	var action = "nextTrack";
-	console.log(action, currentState)
-	socket.emit('transport-state', { uuid: currentState.selectedZone, state: action });
+	console.log(action, Sonos.currentState)
+	socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 document.getElementById('prev').addEventListener('click', function () {
 	var action = "previousTrack";
-	console.log(action, currentState)
-	socket.emit('transport-state', { uuid: currentState.selectedZone, state: action });
+	console.log(action, Sonos.currentState)
+	socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 
 // For chrome
@@ -131,7 +130,7 @@ function handleVolumeWheel(e) {
 }
 
 function updateCurrentStatus() {
-	var selectedZone = players[currentState.selectedZone];
+	var selectedZone = Sonos.players[Sonos.currentState.selectedZone];
 	console.log("updating current", selectedZone)
 	document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
 	document.getElementById("artist").textContent = selectedZone.state.currentTrack.artist;
@@ -166,16 +165,16 @@ function updateCurrentStatus() {
 	}
 
 
-	clearInterval(positionInterval);
+	clearInterval(Sonos.positionInterval);
 	
 	if (selectedZone.state.zoneState == "PLAYING")
-		positionInterval = setInterval(updatePosition, 500);
+		Sonos.positionInterval = setInterval(updatePosition, 500);
 
 	updatePosition();
 }
 
 function updatePosition() {
-	var selectedZone = players[currentState.selectedZone];
+	var selectedZone = Sonos.players[Sonos.currentState.selectedZone];
 	var elapsedMillis = selectedZone.state.elapsedTime*1000 + (new Date().valueOf() - selectedZone.stateTime);
 	
 	var elapsed = Math.floor(elapsedMillis/1000);
@@ -187,8 +186,8 @@ function updatePosition() {
 }
 
 function updateControllerState() {
-	console.log(players[currentState.selectedZone])
-	var state = players[currentState.selectedZone].state.zoneState;
+	console.log(Sonos.players[Sonos.currentState.selectedZone])
+	var state = Sonos.players[Sonos.currentState.selectedZone].state.zoneState;
 	var playPauseButton = document.getElementById('play-pause');
 
 	if (state == "PLAYING") {
@@ -296,19 +295,19 @@ function reRenderZones() {
 	var oldWrapper = document.getElementById('zone-wrapper');
 	var newWrapper = oldWrapper.cloneNode(false);
 		
-	for (var groupUUID in grouping) {
+	for (var groupUUID in Sonos.grouping) {
 		var ul = document.createElement('ul');
 		ul.id = groupUUID;
 
-		if (ul.id == currentState.selectedZone)
+		if (ul.id == Sonos.currentState.selectedZone)
 			ul.className = "selected";
 
 		var groupButton = document.createElement('button');
 		groupButton.textContent = "Group";
 		ul.appendChild(groupButton);
 
-		grouping[groupUUID].forEach(function (playerUUID) {
-			var player = players[playerUUID];
+		Sonos.grouping[groupUUID].forEach(function (playerUUID) {
+			var player = Sonos.players[playerUUID];
 			var li = document.createElement('li');
 			var span = document.createElement('span');
 			span.textContent = player.roomName;
