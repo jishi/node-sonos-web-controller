@@ -1,0 +1,290 @@
+html {
+}
+body {
+	background: #515151;
+	background-image: linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
+	background-image: -moz-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
+	background-image: -webkit-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
+	background-image: -ms-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
+	color: #fff;
+	font-family: Verdana;
+	min-width: 800px;
+	margin: 5px 5px 0 5px;
+	overflow: hidden;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	height: 100vh;
+}
+
+h4 {
+	font-size: 13px;
+}
+
+#top-control {
+	margin-bottom: 10px;
+	position: relative;
+}
+
+/* grey container */
+#top-control {
+	border-radius: 5px;
+	border-top: 2px solid #1A1A1A;
+	border-left: 2px solid #1A1A1A;
+	border-bottom: 2px solid #2D2C2C;
+	border-right: 2px solid #2D2C2C;
+
+	background: #000;
+	height: 80px;
+	background-image: linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
+	background-image: -moz-linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
+	background-image: -webkit-linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
+	background-image: -ms-linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
+}
+
+/* blue container */
+#zone-container h4,
+#status-container h4,
+#music-sources-container h4 {
+	background-image: linear-gradient(bottom, bottom, #001C38 10%, #002C4D 60%);
+	background-image: -moz-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
+	background-image: -webkit-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
+	background-image: -ms-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
+	margin: 0;
+	color: #0A97FF;
+	font-size: 15px;
+	text-shadow: #111 0px -1px;
+
+}
+
+#status-container h4#now-playing {
+	background-image: -moz-linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
+	background-image: -webkit-linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
+	border-bottom: 1px solid rgb(1,36,64);
+	color: #fff;
+}
+
+#status-container h4#queue {
+	border-radius: 0;
+}
+
+#status-container div {
+	padding-top: 40px;
+	padding-left: 20px;
+	padding-bottom: 1px;
+	background-image: -moz-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
+	background-image: -webkit-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
+	border-top: 1px solid rgb(37,85,125);
+}
+
+#status-container h6 {
+	color: rgb(4,90,218);
+	font-weight: normal;
+	font-size: 14px;
+	margin: 0;
+}
+
+#status-container h5 {
+	color: rgb(4,90,218);
+	font-size: 14px;
+	margin: 0;
+}
+
+#status-container p {
+	margin: 0;
+	margin-bottom: 20px;
+	font-size: 14px;
+}
+
+/* rounded containers */
+#top-control,
+#zone-container,
+#status-container,
+#music-sources-container
+{
+	border-radius: 5px;
+}
+
+#column-container {
+	text-align: justify;
+	height: calc(100% - 105px);
+}
+
+#zone-container,
+#status-container,
+#music-sources-container {
+	width: -webkit-calc((100% - 15px) / 3);
+	width: calc(40% - 4px);
+	display: inline-block;
+	height: 100%;
+	height: calc(100vh - 105px);
+	background: #021B2E;
+	vertical-align: top;
+	overflow: hidden;
+}
+
+#zone-container,
+#music-sources-container {
+	width: calc(30% - 4px);
+}
+
+#zone-container h4,
+#status-container h4,
+#music-sources-container h4 {
+	padding: 10px;
+	margin: 0;
+	border-bottom: 1px solid #000000;
+	border-radius: 5px 5px 0 0;
+}
+
+#zone-wrapper {
+	border-top: #012947 solid 1px;
+}
+
+#music-sources-container {				
+	position: relative;
+}
+
+#music-sources-container #bloom {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	
+	background-image: -moz-radial-gradient(right bottom , #043B63 11%, #021B2E 60%);
+	background-image: -webkit-radial-gradient(right bottom , #043B63 11%, #021B2E 60%);
+	background-image: radial-gradient(right bottom , #043B63 11%, #021B2E 60%);
+}
+
+#music-sources-container #bloom img {
+	opacity: 0.15;
+}
+
+#master-volume {
+	width: 180px;
+	height: 21px;
+	top: 28px;
+	left: 50px;
+	border-radius: 15px;
+	border-top: 1px solid #303030;
+	border-bottom: 1px solid #707070;
+	position: absolute;
+
+	background-image: -moz-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
+	background-image: -webkit-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
+
+}
+#master-volume img {
+	margin: -1px 1px;
+}
+
+#master-mute {
+	position: absolute;
+	top: 24px;
+	left: 10px;
+}
+
+#controls {
+	height: 44px;
+	width: 124px;
+	margin: 7px auto 0;
+}
+
+#position-info {
+	height: 22px;
+	width: 440px;
+	margin: 7px auto 0 auto;
+	position: relative;
+}
+
+#position-info .left {
+	position: absolute;
+	left: 0;
+}
+
+#position-info .right {
+	position: absolute;
+	right: 0;
+}
+
+#position-info .content {
+	margin: 0px 38px 0 38px;
+	height: 22px;
+	background-image: url(../images/tc_progress_container_center.png);
+	font-size: 11px;
+	color: #666;
+	text-shadow: #111 0px -1px;
+}
+
+#position-info .content span,
+#position-info .content img,
+#position-info .content div {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#position-info .content #countup {
+	margin-left: 26px;
+}
+
+#position-info .content #countdown {
+	margin-right: 20px;
+}
+
+#position-bar-scrubber {
+	margin-top: -16px;
+}
+
+#position-bar {
+	height: 4px;
+	width: 150px;
+	border-radius: 3px;
+	border-top: 1px solid #101010;
+	border-bottom: 1px solid #606060;
+}
+
+#zone-wrapper ul {
+	background: #0A4069;
+	background-image: -moz-linear-gradient(bottom, #05375F 80%, #084E86 95%);
+	background-image: -webkit-linear-gradient(bottom, #05375F 80%, #084E86 95%);
+	margin: 10px;
+	padding: 10px 10px 10px 46px;
+	border-radius: 5px;
+	border-top: 1px solid #086EAA;
+	border-right: 1px solid #003F6C;
+	border-left: 1px solid #02375E;
+	border-bottom: 1px solid #01365D;
+	position: relative;
+}
+
+#zone-wrapper ul:hover,
+#zone-wrapper ul.selected {
+	background: #0A4069;
+	background-image: -moz-linear-gradient(bottom, #0E568D 80%, #096EB7 95%);
+	background-image: -webkit-linear-gradient(bottom, #0E568D 80%, #096EB7 95%);
+}
+
+#zone-wrapper ul button {
+	position: absolute;
+	right: 10px;
+	padding: 3px 10px 4px;
+	background-image: -moz-linear-gradient(bottom, #05375F 5%, #084E86 95%);
+	background-image: -webkit-linear-gradient(bottom, #05375F 5%, #084E86 95%);
+	color: #fff;
+	border-radius: 4px;
+	border: 1px solid #023E5F;
+	text-shadow: 0 -1px 0 #000;
+}
+
+#zone-wrapper ul button:active {
+	border: 1px inset #023E5F;
+	background-image: -moz-linear-gradient(bottom, #084E86 5%, #05375F 95%);
+	background-image: -webkit-linear-gradient(bottom, #05375F 5%, #084E86 95%);
+}
+
+#zone-wrapper ul li {
+	list-style: url(../images/wdcr_zm_ic_bedroom.png);
+}
+
+#zone-wrapper ul span {
+	vertical-align: super;
+	font-size: 14px;
+}
