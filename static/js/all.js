@@ -126,33 +126,7 @@ document.getElementById('prev').addEventListener('click', function () {
 	socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 
-// For chrome
-document.getElementById('master-volume').addEventListener("mousewheel", handleVolumeWheel);
 
-// For Firefox
-document.getElementById('master-volume').addEventListener("wheel", handleVolumeWheel);
-
-///
-/// Functions
-///
-
-function handleVolumeWheel(e) {
-	var newVolume;
-	if(e.deltaY > 0) {
-		// volume down
-		newVolume = Sonos.currentZoneCoordinator().groupState.volume - 2;		
-	} else {
-		// volume up
-		newVolume = Sonos.currentZoneCoordinator().groupState.volume + 2;
-	}
-	clearTimeout(Sonos.groupVolume.disableTimer);
-	Sonos.groupVolume.disableUpdate = true;
-	Sonos.groupVolume.disableTimer = setTimeout(function () {Sonos.groupVolume.disableUpdate = false}, 500);
-	socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: newVolume});
-	newVolume = Sonos.currentZoneCoordinator().groupState.volume = newVolume;
-	GUI.masterVolume.setVolume( newVolume );
-	
-}
 
 function updateCurrentStatus() {
 	var selectedZone = Sonos.currentZoneCoordinator();
@@ -284,6 +258,25 @@ function VolumeSlider(containerObj, callback) {
 		disableTimer: null
 	};
 
+	function handleVolumeWheel(e) {
+		var newVolume;
+		if(e.deltaY > 0) {
+			// volume down
+			newVolume = Sonos.currentZoneCoordinator().groupState.volume - 2;		
+		} else {
+			// volume up
+			newVolume = Sonos.currentZoneCoordinator().groupState.volume + 2;
+		}
+		clearTimeout(Sonos.groupVolume.disableTimer);
+		Sonos.groupVolume.disableUpdate = true;
+		Sonos.groupVolume.disableTimer = setTimeout(function () {Sonos.groupVolume.disableUpdate = false}, 500);
+		socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: newVolume});
+		newVolume = Sonos.currentZoneCoordinator().groupState.volume = newVolume;
+		GUI.masterVolume.setVolume( newVolume );
+		
+	}
+
+
 	function onDrag(e) {
 		var deltaX = e.clientX - state.originalX;
 		var nextX = state.currentX + deltaX;
@@ -320,6 +313,12 @@ function VolumeSlider(containerObj, callback) {
 		state.currentX = state.slider.offsetLeft;
 		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 500);
 	});
+
+		// For chrome
+		containerObj.addEventListener("mousewheel", handleVolumeWheel);
+
+		// For Firefox
+		containerObj.addEventListener("wheel", handleVolumeWheel);
 	
 	// Add some functions to go
 	this.setVolume = function (volume) {
@@ -330,7 +329,6 @@ function VolumeSlider(containerObj, callback) {
 		state.currentX = offset;
 		state.slider.style.marginLeft = offset + 'px';
 	}
-
 	return this;
 }
 
