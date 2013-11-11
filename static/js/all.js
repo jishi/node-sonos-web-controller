@@ -3,12 +3,18 @@
 var Sonos = {
 	currentState: {
 		selectedZone: null,
-		zoneInfo: null,
-		masterVolume: 0
+		zoneInfo: null
 	},
 	grouping: {},
 	players: {},
-	positionInterval: null
+	positionInterval: null,
+	groupVolume: {
+		disableUpdate: false,
+		disableTimer: null
+	},
+	currentZoneCoordinator: function () {
+		return Sonos.players[Sonos.currentState.selectedZone];
+	}
 };
 
 ///
@@ -16,7 +22,7 @@ var Sonos = {
 ///
 
 var GUI = {
-	masterVolume: volumeSlider(document.getElementById('master-volume'), function (volume) {
+	masterVolume: new VolumeSlider(document.getElementById('master-volume'), function (volume) {
 			socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: volume});
 		})
 };
@@ -29,33 +35,39 @@ socket.on('topology-change', function (data) {
 	var stateTime = new Date().valueOf();
 	data.forEach(function (player) {
 		player.stateTime = stateTime;
-    	Sonos.players[player.uuid] = player;
-    	if (!Sonos.grouping[player.coordinator]) Sonos.grouping[player.coordinator] = [];
-    	Sonos.grouping[player.coordinator].push(player.uuid);
+		Sonos.players[player.uuid] = player;
+		if (!Sonos.grouping[player.coordinator]) Sonos.grouping[player.coordinator] = [];
+		Sonos.grouping[player.coordinator].push(player.uuid);
 
-    	// pre select a group
-    	if (!Sonos.currentState.selectedZone) {
-    		Sonos.currentState.selectedZone = player.coordinator;
-    	}
-    });
+		// pre select a group
+		if (!Sonos.currentState.selectedZone) {
+			Sonos.currentState.selectedZone = player.coordinator;
+		}
+	});
 
-    console.log(Sonos.grouping, Sonos.players);
+	console.log(Sonos.grouping, Sonos.players);
 
-    reRenderZones();
-    updateControllerState();
+	reRenderZones();
+	updateControllerState();
 	updateCurrentStatus();
 });
 
 socket.on('transport-state', function (player) {
-    console.log(player);
-    player.stateTime = new Date().valueOf();
-    Sonos.players[player.uuid] = player;
-    reRenderZones();
-    var selectedZone = Sonos.players[Sonos.currentState.selectedZone];
+	console.log(player);
+	player.stateTime = new Date().valueOf();
+	Sonos.players[player.uuid] = player;
+	reRenderZones();
+	var selectedZone = Sonos.currentZoneCoordinator();
 	console.log(selectedZone)
- 	updateControllerState();
+	updateControllerState();
 	updateCurrentStatus();
 
+});
+
+socket.on('group-volume', function (data) {
+	if (Sonos.groupVolume.disableUpdate) return;
+	Sonos.players[data.uuid].groupState.volume = data.state.volume;
+	GUI.masterVolume.setVolume(data.state.volume);
 });
 
 ///
@@ -92,7 +104,7 @@ document.getElementById('play-pause').addEventListener('click', function () {
 
 	var action;
 	// Find state of current player
-	var player = Sonos.players[Sonos.currentState.selectedZone];
+	var player = Sonos.currentZoneCoordinator();
 	if (player.state.zoneState == "PLAYING" ) {
 		action = 'pause';
 	} else {
@@ -125,12 +137,25 @@ document.getElementById('master-volume').addEventListener("wheel", handleVolumeW
 ///
 
 function handleVolumeWheel(e) {
-	var direction = e.deltaY > 0 ? "down" : "up";
-	console.log(direction)
+	var newVolume;
+	if(e.deltaY > 0) {
+		// volume down
+		newVolume = Sonos.currentZoneCoordinator().groupState.volume - 2;		
+	} else {
+		// volume up
+		newVolume = Sonos.currentZoneCoordinator().groupState.volume + 2;
+	}
+	clearTimeout(Sonos.groupVolume.disableTimer);
+	Sonos.groupVolume.disableUpdate = true;
+	Sonos.groupVolume.disableTimer = setTimeout(function () {Sonos.groupVolume.disableUpdate = false}, 500);
+	socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: newVolume});
+	newVolume = Sonos.currentZoneCoordinator().groupState.volume = newVolume;
+	GUI.masterVolume.setVolume( newVolume );
+	
 }
 
 function updateCurrentStatus() {
-	var selectedZone = Sonos.players[Sonos.currentState.selectedZone];
+	var selectedZone = Sonos.currentZoneCoordinator();
 	console.log("updating current", selectedZone)
 	document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
 	document.getElementById("artist").textContent = selectedZone.state.currentTrack.artist;
@@ -174,7 +199,7 @@ function updateCurrentStatus() {
 }
 
 function updatePosition() {
-	var selectedZone = Sonos.players[Sonos.currentState.selectedZone];
+	var selectedZone = Sonos.currentZoneCoordinator();
 	var elapsedMillis = selectedZone.state.elapsedTime*1000 + (new Date().valueOf() - selectedZone.stateTime);
 	
 	var elapsed = Math.floor(elapsedMillis/1000);
@@ -186,8 +211,8 @@ function updatePosition() {
 }
 
 function updateControllerState() {
-	console.log(Sonos.players[Sonos.currentState.selectedZone])
-	var state = Sonos.players[Sonos.currentState.selectedZone].state.zoneState;
+	var currentZone = Sonos.currentZoneCoordinator();
+	var state = currentZone.state.zoneState;
 	var playPauseButton = document.getElementById('play-pause');
 
 	if (state == "PLAYING") {
@@ -195,6 +220,9 @@ function updateControllerState() {
 	} else {		
 		playPauseButton.src = '/images/play_normal.png';
 	}
+
+	// Fix volume
+	GUI.masterVolume.setVolume(currentZone.groupState.volume);
 }
 
 // Update position
@@ -218,40 +246,42 @@ function toFormattedTime(seconds) {
 
 
 
-	  var chunks = [];
-	  var modulus = [60^2, 60];
-	  var remainingTime = seconds;
-	  // hours
-	  var hours = Math.floor(remainingTime/3600);
+		var chunks = [];
+		var modulus = [60^2, 60];
+		var remainingTime = seconds;
+		// hours
+		var hours = Math.floor(remainingTime/3600);
 
-	  if (hours > 0) {
-	    chunks.push(zpad(hours, 1));
-	    remainingTime -= hours * 3600;
-	  }
+		if (hours > 0) {
+			chunks.push(zpad(hours, 1));
+			remainingTime -= hours * 3600;
+		}
 
-	  // minutes
-	  var minutes = Math.floor(remainingTime/60);
-	  chunks.push(zpad(minutes, 1));
-	  remainingTime -= minutes * 60;
-	  // seconds
-	  chunks.push(zpad(Math.floor(remainingTime), 2))
-	  return chunks.join(':');
+		// minutes
+		var minutes = Math.floor(remainingTime/60);
+		chunks.push(zpad(minutes, 1));
+		remainingTime -= minutes * 60;
+		// seconds
+		chunks.push(zpad(Math.floor(remainingTime), 2))
+		return chunks.join(':');
 }
 
 function zpad(number, width) {
-  var str = number + "";
-  if (str.length >= width) return str;
-  var padding = new Array(width - str.length + 1).join('0');
-  return padding + str;
+	var str = number + "";
+	if (str.length >= width) return str;
+	var padding = new Array(width - str.length + 1).join('0');
+	return padding + str;
 }
 
-function volumeSlider(containerObj, callback) {
+function VolumeSlider(containerObj, callback) {
 	var state = {
 		originalX: 0,
 		maxX: 0,
 		currentX: 0,
 		slider: null,
-		volume: 0
+		volume: 0,
+		disableUpdate: false,
+		disableTimer: null
 	};
 
 	function onDrag(e) {
@@ -271,21 +301,35 @@ function volumeSlider(containerObj, callback) {
 		state.volume = volume;
 	}
 
-	var volumeScrubber = containerObj.querySelector('img');
+	var sliderWidth = containerObj.clientWidth;
+	state.maxX = sliderWidth - 21;
+	state.slider = containerObj.querySelector('img');
+	state.currentX = state.slider.offsetLeft;
 
-	volumeScrubber.addEventListener('mousedown', function (e) {
-		state.slider = this;
+	state.slider.addEventListener('mousedown', function (e) {
 		state.originalX = e.clientX;
-		var sliderWidth = this.parentNode.clientWidth;
-		state.maxX = sliderWidth - 21;
-		state.currentX = this.offsetLeft;
+		clearTimeout(state.disableTimer);
+		state.disableUpdate = true;
 		document.addEventListener('mousemove', onDrag);
 		e.preventDefault();
 	});
 	
 	document.addEventListener('mouseup', function () {
-		document.removeEventListener('mousemove', onDrag);				
+		document.removeEventListener('mousemove', onDrag);
+		console.log(state)
+		state.currentX = state.slider.offsetLeft;
+		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 500);
 	});
+	
+	// Add some functions to go
+	this.setVolume = function (volume) {
+		if (state.disableUpdate) return;
+		// calculate a pixel offset based on percentage
+		var offset = Math.round(state.maxX * volume / 100);
+		console.log(offset,state.maxX, volume);
+		state.currentX = offset;
+		state.slider.style.marginLeft = offset + 'px';
+	}
 
 	return this;
 }

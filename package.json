@@ -1,6 +1,6 @@
 {
   "name": "sonos-web-controller",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Web based controller for your Sonos system",
   "author": "Jimmy Shimizu <jimmy@shimizu.se>",
   "dependencies": {

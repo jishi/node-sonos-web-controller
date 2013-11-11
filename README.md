@@ -25,3 +25,8 @@ For a screenshot of current progress, see: `http://upload.grabbarna.se/files/son
 Currently, prev, next, play/pause and the progress bar works. Group volume works as well, but not as expected (and doesn't update). Track info, player state and progress bar updates instantly when controlled from another device, which was one of the main goals with this project.
 
 This software is in no way affiliated nor endorsed by Sonos inc.
+
+Change log
+==========
+
+ * 0.1.4 Working master volume control (requires upgraded sonos-discovery 0.5.2)

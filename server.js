@@ -65,6 +65,10 @@ discovery.on('transport-state', function (data) {
 	socketServer.sockets.emit('transport-state', data);
 });
 
+discovery.on('group-volume', function (data) {
+	socketServer.sockets.emit('group-volume', data);
+});
+
 
 
 // Attach handler for socket.io
