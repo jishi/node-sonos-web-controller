@@ -69,6 +69,10 @@ discovery.on('group-volume', function (data) {
 	socketServer.sockets.emit('group-volume', data);
 });
 
+discovery.on('favorites', function (data) {
+	socketServer.sockets.emit('favorites', data);	
+});
+
 
 
 // Attach handler for socket.io

@@ -67,6 +67,7 @@ socket.on('transport-state', function (player) {
 socket.on('group-volume', function (data) {
 	if (Sonos.groupVolume.disableUpdate) return;
 	Sonos.players[data.uuid].groupState.volume = data.state.volume;
+	if (data.uuid != Sonos.currentState.selectedZone) return;
 	GUI.masterVolume.setVolume(data.state.volume);
 });
 
@@ -261,7 +262,6 @@ function VolumeSlider(containerObj, callback) {
 	function setVolume(volume) {
 		// calculate a pixel offset based on percentage
 		var offset = Math.round(state.maxX * volume / 100);
-		console.log(offset,state.maxX, volume);
 		state.currentX = offset;
 		state.slider.style.marginLeft = offset + 'px';
 	}
