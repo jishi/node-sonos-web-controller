@@ -258,6 +258,14 @@ function VolumeSlider(containerObj, callback) {
 		disableTimer: null
 	};
 
+	function setVolume(volume) {
+		// calculate a pixel offset based on percentage
+		var offset = Math.round(state.maxX * volume / 100);
+		console.log(offset,state.maxX, volume);
+		state.currentX = offset;
+		state.slider.style.marginLeft = offset + 'px';
+	}
+
 	function handleVolumeWheel(e) {
 		var newVolume;
 		if(e.deltaY > 0) {
@@ -269,13 +277,32 @@ function VolumeSlider(containerObj, callback) {
 		}
 		clearTimeout(Sonos.groupVolume.disableTimer);
 		Sonos.groupVolume.disableUpdate = true;
-		Sonos.groupVolume.disableTimer = setTimeout(function () {Sonos.groupVolume.disableUpdate = false}, 500);
+		Sonos.groupVolume.disableTimer = setTimeout(function () {Sonos.groupVolume.disableUpdate = false}, 800);
 		socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: newVolume});
 		newVolume = Sonos.currentZoneCoordinator().groupState.volume = newVolume;
 		GUI.masterVolume.setVolume( newVolume );
 		
 	}
 
+	function handleClick(e) {
+		if (e.target.tagName == "IMG") return;
+
+		var newVolume;
+		if(e.layerX < state.currentX) {
+			// volume down
+			newVolume = Sonos.currentZoneCoordinator().groupState.volume - 2;		
+		} else {
+			// volume up
+			newVolume = Sonos.currentZoneCoordinator().groupState.volume + 2;
+		}
+		clearTimeout(state.disableTimer);
+		setVolume(newVolume);
+		Sonos.currentZoneCoordinator().groupState.volume = newVolume;
+		state.disableUpdate = true;
+		callback(newVolume);
+		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 800);
+
+	}
 
 	function onDrag(e) {
 		var deltaX = e.clientX - state.originalX;
@@ -309,26 +336,27 @@ function VolumeSlider(containerObj, callback) {
 	
 	document.addEventListener('mouseup', function () {
 		document.removeEventListener('mousemove', onDrag);
-		console.log(state)
 		state.currentX = state.slider.offsetLeft;
-		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 500);
+		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 800);
 	});
 
-		// For chrome
-		containerObj.addEventListener("mousewheel", handleVolumeWheel);
+	// For chrome
+	containerObj.addEventListener("mousewheel", handleVolumeWheel);
 
-		// For Firefox
-		containerObj.addEventListener("wheel", handleVolumeWheel);
+	// For Firefox
+	containerObj.addEventListener("wheel", handleVolumeWheel);
+
+	// For click-to-adjust
+	containerObj.addEventListener("click", handleClick);
+
+
 	
 	// Add some functions to go
 	this.setVolume = function (volume) {
 		if (state.disableUpdate) return;
-		// calculate a pixel offset based on percentage
-		var offset = Math.round(state.maxX * volume / 100);
-		console.log(offset,state.maxX, volume);
-		state.currentX = offset;
-		state.slider.style.marginLeft = offset + 'px';
+		setVolume(volume);
 	}
+	
 	return this;
 }
 

@@ -29,4 +29,5 @@ This software is in no way affiliated nor endorsed by Sonos inc.
 Change log
 ==========
 
+ * 0.1.5 Master volume control now handles click for small increments
  * 0.1.4 Working master volume control (requires upgraded sonos-discovery 0.5.2)
