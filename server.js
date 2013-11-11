@@ -8,10 +8,10 @@ var port = 8080;
 var fileServer = new static.Server('./static');
 
 var server = http.createServer(function (req, res) {
-	
+
 	req.addListener('end', function () {
         fileServer.serve(req, res);
-    });	
+    }).resume();
 });
 
 var socketServer = io.listen(server);
@@ -23,7 +23,7 @@ socketServer.sockets.on('connection', function (socket) {
 		var player = discovery.players[uuid];
 		players.push(player.convertToSimple());
 	}
-	
+
 	socket.emit('topology-change', players);
 
   	socket.on('transport-state', function (data) {
