@@ -383,7 +383,6 @@ var zoneManagement = function() {
 	}
 
 	function handleDrop(e) {
-
 		if (e.target == this) {
 			// detach
 			console.log("detach");
@@ -392,7 +391,7 @@ var zoneManagement = function() {
 		}
 
 		var zone = findZoneNode(e.target);
-		if (!zone || zone == e.target.parentNode) return;
+		if (!zone || zone == this.parentNode) return;
 
 		console.log(dragItem.dataset.id, zone.id);
 		socket.emit('group-management', {player: dragItem.dataset.id, group: zone.id});
