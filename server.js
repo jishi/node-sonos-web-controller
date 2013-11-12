@@ -19,12 +19,19 @@ var socketServer = io.listen(server);
 socketServer.sockets.on('connection', function (socket) {
   // Send it in a better format
   var players = [];
+  var player;
   for (var uuid in discovery.players) {
-    var player = discovery.players[uuid];
+    player = discovery.players[uuid];
     players.push(player.convertToSimple());
   }
 
+  if (players.length == 0) return;
+
   socket.emit('topology-change', players);
+  player.getFavorites(function (success, favorites) {
+    socket.emit('favorites', favorites);
+  });
+
 
   socket.on('transport-state', function (data) {
     // find player based on uuid
@@ -49,7 +56,7 @@ socketServer.sockets.on('connection', function (socket) {
 
   socket.on('group-management', function (data) {
       // find player based on uuid
-      console.log(data)  
+      console.log(data)
       var player = discovery.getPlayerByUUID(data.player);
       if (!player) return;
 
@@ -59,7 +66,17 @@ socketServer.sockets.on('connection', function (socket) {
       }
 
       player.setAVTransportURI('x-rincon:' + data.group);
-  });   
+  });
+
+  socket.on('play-favorite', function (data) {
+    console.log(data)
+    var player = discovery.getPlayerByUUID(data.uuid);
+    if (!player) return;
+
+    player.replaceWithFavorite(data.favorite, function (success) {
+      if (success) player.play();
+    });
+  });
 
   socket.on("error", function (e) {
     console.log(e);
@@ -84,7 +101,7 @@ discovery.on('group-volume', function (data) {
 });
 
 discovery.on('favorites', function (data) {
-  socketServer.sockets.emit('favorites', data); 
+  socketServer.sockets.emit('favorites', data);
 });
 
 

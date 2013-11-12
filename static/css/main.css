@@ -295,3 +295,15 @@ h4 {
 	vertical-align: super;
 	font-size: 14px;
 }
+
+#favorites-container {
+	margin: 0;
+	padding: 10px 15px;
+	cursor: pointer;
+}
+
+#favorites-container li {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}

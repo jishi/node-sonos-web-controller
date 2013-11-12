@@ -71,6 +71,10 @@ socket.on('group-volume', function (data) {
 	GUI.masterVolume.setVolume(data.state.volume);
 });
 
+socket.on('favorites', function (data) {
+	renderFavorites(data);
+});
+
 ///
 /// GUI events
 ///
@@ -97,9 +101,6 @@ document.getElementById('zone-container').addEventListener('click', function (e)
 
 	updateControllerState();
 	updateCurrentStatus();
-
-
-
 }, true);
 
 document.getElementById('play-pause').addEventListener('click', function () {
@@ -128,7 +129,14 @@ document.getElementById('prev').addEventListener('click', function () {
 	socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 
+document.getElementById('music-sources-container').addEventListener('dblclick', function (e) {
+	socket.emit('play-favorite', {uuid: Sonos.currentState.selectedZone, favorite: e.target.dataset.title});
+});
 
+
+///
+/// ACTIONS
+///
 
 function updateCurrentStatus() {
 	var selectedZone = Sonos.currentZoneCoordinator();
@@ -276,6 +284,10 @@ function VolumeSlider(containerObj, callback) {
 			// volume up
 			newVolume = Sonos.currentZoneCoordinator().groupState.volume + 2;
 		}
+
+		if (newVolume < 0) newVolume = 0;
+		if (newVolume > 100) newVolume = 100;
+
 		clearTimeout(Sonos.groupVolume.disableTimer);
 		Sonos.groupVolume.disableUpdate = true;
 		Sonos.groupVolume.disableTimer = setTimeout(function () {Sonos.groupVolume.disableUpdate = false}, 800);
@@ -296,6 +308,10 @@ function VolumeSlider(containerObj, callback) {
 			// volume up
 			newVolume = Sonos.currentZoneCoordinator().groupState.volume + 2;
 		}
+
+		if (newVolume < 0) newVolume = 0;
+		if (newVolume > 100) newVolume = 100;
+
 		clearTimeout(state.disableTimer);
 		setVolume(newVolume);
 		Sonos.currentZoneCoordinator().groupState.volume = newVolume;
@@ -437,4 +453,20 @@ function reRenderZones() {
 		newWrapper.appendChild(ul);
 	}
 	oldWrapper.parentNode.replaceChild(newWrapper, oldWrapper);
+}
+
+function renderFavorites(favorites) {
+	console.log(favorites)
+	var oldContainer = document.getElementById('favorites-container');
+	var newContainer = oldContainer.cloneNode(false);
+
+	favorites.forEach(function (favorite) {
+		var li = document.createElement('li');
+		li.dataset.title = favorite.title;
+		li.textContent = favorite.title;
+		newContainer.appendChild(li);
+	});
+
+
+	oldContainer.parentNode.replaceChild(newContainer, oldContainer);
 }
