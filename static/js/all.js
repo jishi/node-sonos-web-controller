@@ -300,7 +300,7 @@ function VolumeSlider(containerObj, callback) {
 		Sonos.currentZoneCoordinator().groupState.volume = newVolume;
 		state.disableUpdate = true;
 		callback(newVolume);
-		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 800);
+		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 1500);
 
 	}
 
@@ -360,8 +360,59 @@ function VolumeSlider(containerObj, callback) {
 	return this;
 }
 
-function reRenderZones() {
+var zoneManagement = function() {
 
+	var dragItem;
+
+	function findZoneNode(currentNode) {
+		// If we are at top level, abort.
+		if (currentNode == this) return;
+		if (currentNode.tagName == "UL") return currentNode;
+		return findZoneNode(currentNode.parentNode);
+	}
+
+	function handleDragStart(e) {
+		e.dataTransfer.effectAllowed = 'move';
+		e.dataTransfer.setData('text/html', e.target.innerHTML);
+		dragItem = e.target;
+		dragItem.classList.add('drag');  			
+	}
+
+	function handleDragEnd(e) {
+		dragItem.classList.remove('drag');
+	}
+
+	function handleDrop(e) {
+
+		if (e.target == this) {
+			// detach
+			console.log("detach");
+			socket.emit('group-management', {player: dragItem.dataset.id, group: null});
+			return;
+		}
+
+		var zone = findZoneNode(e.target);
+		if (!zone || zone == e.target.parentNode) return;
+
+		console.log(dragItem.dataset.id, zone.id);
+		socket.emit('group-management', {player: dragItem.dataset.id, group: zone.id});
+
+	}
+
+	function handleDragOver(e) {
+		e.preventDefault();
+		e.dataTransfer.dropEffect = 'move';
+		
+	}
+
+	document.getElementById('zone-container').addEventListener('dragstart', handleDragStart);
+	document.getElementById('zone-container').addEventListener('dragend', handleDragEnd);
+	document.getElementById('zone-container').addEventListener('dragover', handleDragOver);
+	document.getElementById('zone-container').addEventListener('drop', handleDrop);
+
+}();
+
+function reRenderZones() {
 	var oldWrapper = document.getElementById('zone-wrapper');
 	var newWrapper = oldWrapper.cloneNode(false);
 		
@@ -372,16 +423,14 @@ function reRenderZones() {
 		if (ul.id == Sonos.currentState.selectedZone)
 			ul.className = "selected";
 
-		var groupButton = document.createElement('button');
-		groupButton.textContent = "Group";
-		ul.appendChild(groupButton);
-
 		Sonos.grouping[groupUUID].forEach(function (playerUUID) {
 			var player = Sonos.players[playerUUID];
 			var li = document.createElement('li');
 			var span = document.createElement('span');
 			span.textContent = player.roomName;
 			li.appendChild(span);
+			li.draggable = true;
+			li.dataset.id = playerUUID;			
 			ul.appendChild(li);
 		});
 

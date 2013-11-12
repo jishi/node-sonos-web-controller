@@ -282,6 +282,11 @@ h4 {
 
 #zone-wrapper ul li {
 	list-style: url(../images/wdcr_zm_ic_bedroom.png);
+	padding-top: 3px;		
+}
+
+#zone-wrapper ul li.drag {
+	outline: 2px red solid;
 }
 
 #zone-wrapper ul span {
