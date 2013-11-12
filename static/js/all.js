@@ -88,9 +88,10 @@ document.getElementById('zone-container').addEventListener('click', function (e)
 
 	if (!zone) return;
 
-	document.getElementById(Sonos.currentState.selectedZone).classList.remove('selected');
+	var previousZone = document.getElementById(Sonos.currentState.selectedZone);
+	if (previousZone) previousZone.classList.remove('selected');
 
-	Sonos.currentState.selectedZone = zone.id;	
+	Sonos.currentState.selectedZone = zone.id;
 	zone.classList.add('selected');
 	// Update controls with status
 
@@ -166,7 +167,7 @@ function updateCurrentStatus() {
 
 
 	clearInterval(Sonos.positionInterval);
-	
+
 	if (selectedZone.state.zoneState == "PLAYING")
 		Sonos.positionInterval = setInterval(updatePosition, 500);
 
@@ -176,7 +177,7 @@ function updateCurrentStatus() {
 function updatePosition() {
 	var selectedZone = Sonos.currentZoneCoordinator();
 	var elapsedMillis = selectedZone.state.elapsedTime*1000 + (new Date().valueOf() - selectedZone.stateTime);
-	
+
 	var elapsed = Math.floor(elapsedMillis/1000);
 	document.getElementById("countup").textContent = toFormattedTime(elapsed);
 	var remaining = selectedZone.state.currentTrack.duration - elapsed;
@@ -192,7 +193,7 @@ function updateControllerState() {
 
 	if (state == "PLAYING") {
 		playPauseButton.src = '/images/pause_normal.png';
-	} else {		
+	} else {
 		playPauseButton.src = '/images/play_normal.png';
 	}
 
@@ -270,7 +271,7 @@ function VolumeSlider(containerObj, callback) {
 		var newVolume;
 		if(e.deltaY > 0) {
 			// volume down
-			newVolume = Sonos.currentZoneCoordinator().groupState.volume - 2;		
+			newVolume = Sonos.currentZoneCoordinator().groupState.volume - 2;
 		} else {
 			// volume up
 			newVolume = Sonos.currentZoneCoordinator().groupState.volume + 2;
@@ -281,7 +282,7 @@ function VolumeSlider(containerObj, callback) {
 		socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: newVolume});
 		newVolume = Sonos.currentZoneCoordinator().groupState.volume = newVolume;
 		GUI.masterVolume.setVolume( newVolume );
-		
+
 	}
 
 	function handleClick(e) {
@@ -290,7 +291,7 @@ function VolumeSlider(containerObj, callback) {
 		var newVolume;
 		if(e.layerX < state.currentX) {
 			// volume down
-			newVolume = Sonos.currentZoneCoordinator().groupState.volume - 2;		
+			newVolume = Sonos.currentZoneCoordinator().groupState.volume - 2;
 		} else {
 			// volume up
 			newVolume = Sonos.currentZoneCoordinator().groupState.volume + 2;
@@ -307,7 +308,7 @@ function VolumeSlider(containerObj, callback) {
 	function onDrag(e) {
 		var deltaX = e.clientX - state.originalX;
 		var nextX = state.currentX + deltaX;
-		
+
 		if ( nextX > state.maxX ) nextX = state.maxX;
 		else if ( nextX < 1) nextX = 1;
 
@@ -316,7 +317,7 @@ function VolumeSlider(containerObj, callback) {
 		// calculate percentage
 		var volume = Math.floor(nextX / state.maxX * 100);
 		if (volume != state.volume && callback) {
-			callback(state.volume);			
+			callback(state.volume);
 		}
 		state.volume = volume;
 	}
@@ -333,7 +334,7 @@ function VolumeSlider(containerObj, callback) {
 		document.addEventListener('mousemove', onDrag);
 		e.preventDefault();
 	});
-	
+
 	document.addEventListener('mouseup', function () {
 		document.removeEventListener('mousemove', onDrag);
 		state.currentX = state.slider.offsetLeft;
@@ -350,13 +351,13 @@ function VolumeSlider(containerObj, callback) {
 	containerObj.addEventListener("click", handleClick);
 
 
-	
+
 	// Add some functions to go
 	this.setVolume = function (volume) {
 		if (state.disableUpdate) return;
 		setVolume(volume);
 	}
-	
+
 	return this;
 }
 
@@ -375,7 +376,7 @@ var zoneManagement = function() {
 		e.dataTransfer.effectAllowed = 'move';
 		e.dataTransfer.setData('text/html', e.target.innerHTML);
 		dragItem = e.target;
-		dragItem.classList.add('drag');  			
+		dragItem.classList.add('drag');
 	}
 
 	function handleDragEnd(e) {
@@ -401,7 +402,7 @@ var zoneManagement = function() {
 	function handleDragOver(e) {
 		e.preventDefault();
 		e.dataTransfer.dropEffect = 'move';
-		
+
 	}
 
 	document.getElementById('zone-container').addEventListener('dragstart', handleDragStart);
@@ -414,7 +415,7 @@ var zoneManagement = function() {
 function reRenderZones() {
 	var oldWrapper = document.getElementById('zone-wrapper');
 	var newWrapper = oldWrapper.cloneNode(false);
-		
+
 	for (var groupUUID in Sonos.grouping) {
 		var ul = document.createElement('ul');
 		ul.id = groupUUID;
@@ -429,11 +430,11 @@ function reRenderZones() {
 			span.textContent = player.roomName;
 			li.appendChild(span);
 			li.draggable = true;
-			li.dataset.id = playerUUID;			
+			li.dataset.id = playerUUID;
 			ul.appendChild(li);
 		});
 
-		newWrapper.appendChild(ul);	
+		newWrapper.appendChild(ul);
 	}
 	oldWrapper.parentNode.replaceChild(newWrapper, oldWrapper);
 }

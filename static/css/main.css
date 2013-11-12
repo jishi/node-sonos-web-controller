@@ -140,7 +140,7 @@ h4 {
 	border-top: #012947 solid 1px;
 }
 
-#music-sources-container {				
+#music-sources-container {
 	position: relative;
 }
 
@@ -148,7 +148,7 @@ h4 {
 	position: absolute;
 	right: 0;
 	bottom: 0;
-	
+
 	background-image: -moz-radial-gradient(right bottom , #043B63 11%, #021B2E 60%);
 	background-image: -webkit-radial-gradient(right bottom , #043B63 11%, #021B2E 60%);
 	background-image: radial-gradient(right bottom , #043B63 11%, #021B2E 60%);
@@ -282,11 +282,13 @@ h4 {
 
 #zone-wrapper ul li {
 	list-style: url(../images/wdcr_zm_ic_bedroom.png);
-	padding-top: 3px;		
+	padding-top: 3px;
+	cursor: pointer;
 }
 
 #zone-wrapper ul li.drag {
-	outline: 2px red solid;
+	outline: 2px #ddd dashed;
+	cursor: move;
 }
 
 #zone-wrapper ul span {
