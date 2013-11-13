@@ -130,7 +130,14 @@ document.getElementById('prev').addEventListener('click', function () {
 });
 
 document.getElementById('music-sources-container').addEventListener('dblclick', function (e) {
-	socket.emit('play-favorite', {uuid: Sonos.currentState.selectedZone, favorite: e.target.dataset.title});
+	function findFavoriteNode(currentNode) {
+		// If we are at top level, abort.
+		if (currentNode == this) return;
+		if (currentNode.tagName == "LI") return currentNode;
+		return findFavoriteNode(currentNode.parentNode);
+	}
+	var li = findFavoriteNode(e.target);
+	socket.emit('play-favorite', {uuid: Sonos.currentState.selectedZone, favorite: li.dataset.title});
 });
 
 
@@ -183,10 +190,16 @@ function updateCurrentStatus() {
 }
 
 function updatePosition() {
+	var elapsedMillis, elapsed;
 	var selectedZone = Sonos.currentZoneCoordinator();
-	var elapsedMillis = selectedZone.state.elapsedTime*1000 + (new Date().valueOf() - selectedZone.stateTime);
+	if (selectedZone.state.zoneState == "PLAYING") {
+		var elapsedMillis = selectedZone.state.elapsedTime*1000 + (new Date().valueOf() - selectedZone.stateTime);
+		var elapsed = Math.floor(elapsedMillis/1000);
+	} else {
+		elapsed = selectedZone.state.elapsedTime;
+		elapsedMillis = elapsed * 1000;
+	}
 
-	var elapsed = Math.floor(elapsedMillis/1000);
 	document.getElementById("countup").textContent = toFormattedTime(elapsed);
 	var remaining = selectedZone.state.currentTrack.duration - elapsed;
 	document.getElementById("countdown").textContent = "-" + toFormattedTime(remaining);
@@ -463,7 +476,12 @@ function renderFavorites(favorites) {
 	favorites.forEach(function (favorite) {
 		var li = document.createElement('li');
 		li.dataset.title = favorite.title;
-		li.textContent = favorite.title;
+		var span = document.createElement('span');
+		span.textContent = favorite.title;
+		var albumArt = document.createElement('img');
+		albumArt.src = favorite.albumArtURI;
+		li.appendChild(albumArt);
+		li.appendChild(span);
 		newContainer.appendChild(li);
 	});
 
