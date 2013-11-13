@@ -357,10 +357,7 @@ function VolumeSlider(containerObj, callback) {
 		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 800);
 	});
 
-	// For chrome
-	containerObj.addEventListener("mousewheel", handleVolumeWheel);
-
-	// For Firefox
+	// Since Chrome 31 wheel event is also supported
 	containerObj.addEventListener("wheel", handleVolumeWheel);
 
 	// For click-to-adjust
