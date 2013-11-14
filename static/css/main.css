@@ -142,20 +142,10 @@ h4 {
 
 #music-sources-container {
 	position: relative;
-}
+	background-image: url(../images/s_bloom_20.png), radial-gradient(circle at bottom right, #043B63 0, #021B2E 180px);
+	background-position: bottom right;
+	background-repeat: no-repeat;
 
-#music-sources-container #bloom {
-	position: absolute;
-	right: 0;
-	bottom: 0;
-
-	background-image: -moz-radial-gradient(right bottom , #043B63 11%, #021B2E 60%);
-	background-image: -webkit-radial-gradient(right bottom , #043B63 11%, #021B2E 60%);
-	background-image: radial-gradient(right bottom , #043B63 11%, #021B2E 60%);
-}
-
-#music-sources-container #bloom img {
-	opacity: 0.15;
 }
 
 #master-volume {
