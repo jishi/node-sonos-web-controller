@@ -169,6 +169,7 @@ document.getElementById('status-container').addEventListener('dblclick', functio
 function updateCurrentStatus() {
 	var selectedZone = Sonos.currentZoneCoordinator();
 	console.log("updating current", selectedZone)
+	document.getElementById("current-track-art").src =  selectedZone.state.currentTrack.albumArtURI;
 	document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
 	document.getElementById("artist").textContent = selectedZone.state.currentTrack.artist;
 	document.getElementById("album").textContent = selectedZone.state.currentTrack.album;
