@@ -47,7 +47,7 @@
 		</div>
 		<div id="status-container">
 			<h4 id="now-playing">NOW PLAYING</h4>
-			<div id="current-track-info">
+			<div>
 				<h6>Track</h6>
 				<p id="track"></p>
 				<h6>Artist</h6>
@@ -57,17 +57,20 @@
 
 
 				<h5>Next</h5>
-				<p id="next-track"></p>
+				<p id="next-track">Foo - Foo</p>
 			</div>
 
 			<h4 id="queue">QUEUE</h4>
-			<ul id="queue-container">
-			</ul>
 
 		</div>
 		<div id="music-sources-container">
 			<h4>Favorites</h4>
-
+<<<<<<< HEAD
+			<div id="bloom">
+				<img src="images/s_bloom.png" />
+			</div>
+=======
+>>>>>>> 79568e0c2bbe841a747eab84e3ac65dde479c5fb
 			<ul id="favorites-container"></ul>
 
 		</div>

@@ -42,6 +42,8 @@ socket.on('topology-change', function (data) {
 		// pre select a group
 		if (!Sonos.currentState.selectedZone) {
 			Sonos.currentState.selectedZone = player.coordinator;
+			// we need queue as well!
+			socket.emit('queue', {uuid:Sonos.currentState.selectedZone});
 		}
 	});
 
@@ -75,6 +77,11 @@ socket.on('favorites', function (data) {
 	renderFavorites(data);
 });
 
+socket.on('queue', function (data) {
+	console.log("received queue", data.startIndex, data.totalMatches);
+	renderQueue(data);
+});
+
 ///
 /// GUI events
 ///
@@ -98,9 +105,12 @@ document.getElementById('zone-container').addEventListener('click', function (e)
 	Sonos.currentState.selectedZone = zone.id;
 	zone.classList.add('selected');
 	// Update controls with status
-
 	updateControllerState();
 	updateCurrentStatus();
+
+	// fetch queue
+	socket.emit('queue', {uuid: Sonos.currentState.selectedZone});
+
 }, true);
 
 document.getElementById('play-pause').addEventListener('click', function () {
@@ -140,6 +150,17 @@ document.getElementById('music-sources-container').addEventListener('dblclick', 
 	socket.emit('play-favorite', {uuid: Sonos.currentState.selectedZone, favorite: li.dataset.title});
 });
 
+document.getElementById('status-container').addEventListener('dblclick', function (e) {
+	function findQueueNode(currentNode) {
+		// If we are at top level, abort.
+		if (currentNode == this) return;
+		if (currentNode.tagName == "LI") return currentNode;
+		return findQueueNode(currentNode.parentNode);
+	}
+	var li = findQueueNode(e.target);
+	if (!li) return;
+	socket.emit('seek', {uuid: Sonos.currentState.selectedZone, trackNo: li.dataset.trackNo});
+});
 
 ///
 /// ACTIONS
@@ -466,7 +487,6 @@ function reRenderZones() {
 }
 
 function renderFavorites(favorites) {
-	console.log(favorites)
 	var oldContainer = document.getElementById('favorites-container');
 	var newContainer = oldContainer.cloneNode(false);
 
@@ -484,4 +504,82 @@ function renderFavorites(favorites) {
 
 
 	oldContainer.parentNode.replaceChild(newContainer, oldContainer);
+}
+
+function renderQueue(queue) {
+	var tempContainer = document.createDocumentFragment();
+
+	var trackIndex = queue.startIndex + 1;
+
+	queue.items.forEach(function (q) {
+		var li = document.createElement('li');
+		li.dataset.title = q.uri;
+		li.dataset.trackNo = trackIndex++;
+
+		var albumArt = document.createElement('img');
+		//albumArt.src = q.albumArtURI;
+		albumArt.dataset.src = q.albumArtURI;
+		if (trackIndex < 20) {
+			albumArt.src = q.albumArtURI;
+			albumArt.className = "loaded";
+		}
+
+		li.appendChild(albumArt);
+
+		var trackInfo = document.createElement('div');
+		var title = document.createElement('p');
+		title.className = 'title';
+		title.textContent = q.title;
+		trackInfo.appendChild(title);
+		var artist = document.createElement('p');
+		artist.className = 'artist';
+		artist.textContent = q.artist;
+		trackInfo.appendChild(artist);
+
+		li.appendChild(trackInfo);
+		tempContainer.appendChild(li);
+	});
+
+	var oldContainer = document.getElementById('queue-container');
+	if (queue.startIndex == 0) {
+		// This is a new queue
+		var newContainer = oldContainer.cloneNode(false);
+		newContainer.addEventListener('scroll', function (e) {
+			lazyLoadImages(this);
+		});
+		newContainer.appendChild(tempContainer);
+		oldContainer.parentNode.replaceChild(newContainer, oldContainer);
+	} else {
+		// This should be added! we assume they come in the correct order
+		oldContainer.appendChild(tempContainer);
+
+	}
+}
+
+function lazyLoadImages(container) {
+	// Find elements that are in viewport
+	var containerViewport = container.getBoundingClientRect();
+	// best estimate of starting point
+	var trackHeight = container.firstChild.clientHeight;
+
+	// startIndex
+	var startIndex = Math.floor(containerViewport.top / trackHeight);
+	var currentNode = container.childNodes[startIndex];
+
+
+	console.log(startIndex, currentNode)
+	while (currentNode && currentNode.getBoundingClientRect().top < containerViewport.bottom) {
+		var img = currentNode.firstChild;
+		currentNode = currentNode.nextSibling;
+		if (img.className == 'loaded') {
+			continue;
+		}
+
+		console.log("loading", img)
+		// get image
+		img.src = img.dataset.src;
+		img.className = 'loaded';
+
+	}
+
 }
