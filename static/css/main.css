@@ -14,6 +14,7 @@ body {
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	height: 100vh;
+	text-shadow: #111 0px -1px;
 }
 
 h4 {
@@ -35,30 +36,28 @@ h4 {
 
 	background: #000;
 	height: 80px;
-	background-image: linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
 	background-image: -moz-linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
 	background-image: -webkit-linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
 	background-image: -ms-linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
+	background-image: linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
 }
 
 /* blue container */
 #zone-container h4,
 #status-container h4,
 #music-sources-container h4 {
-	background-image: linear-gradient(bottom, bottom, #001C38 10%, #002C4D 60%);
-	background-image: -moz-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
-	background-image: -webkit-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
-	background-image: -ms-linear-gradient(bottom, #001C38 10%, #002C4D 60%);
+	background-image: -moz-linear-gradient(top, #002C4D 2%, #001C38 90%);
+	background-image: -webkit-linear-gradient(top, #002C4D 2%, #001C38 90%);
+	background-image: linear-gradient(top, #002C4D 2%, #001C38 90%);
 	margin: 0;
 	color: #0A97FF;
 	font-size: 15px;
-	text-shadow: #111 0px -1px;
-
 }
 
 #status-container h4#now-playing {
 	background-image: -moz-linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
 	background-image: -webkit-linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
+	background-image: linear-gradient(top, rgb(7,79,131) 0%, rgb(9,58,94) 100%);
 	border-bottom: 1px solid rgb(1,36,64);
 	color: #fff;
 }
@@ -100,6 +99,7 @@ h4 {
 	color: rgb(4,90,218);
 	font-size: 14px;
 	margin: 0;
+	margin-top: 4px;
 }
 
 #status-container p {
@@ -233,7 +233,7 @@ h4 {
 }
 
 #position-bar-scrubber {
-	margin-top: -16px;
+	margin-top: -15px;
 }
 
 #position-bar {
@@ -295,6 +295,7 @@ h4 {
 	cursor: pointer;
 	height: calc(100% - 40px);
 	overflow: auto;
+	border-top: 1px solid #012947;
 }
 
 #favorites-container li,
@@ -341,7 +342,7 @@ h4 {
 }
 
 #queue-container {
-	height: calc(100% - 348px);
+	height: calc(100% - 316px);
 }
 
 
