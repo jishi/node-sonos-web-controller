@@ -55,7 +55,6 @@ socket.on('topology-change', function (data) {
 });
 
 socket.on('transport-state', function (player) {
-	console.log(player);
 	player.stateTime = new Date().valueOf();
 	Sonos.players[player.uuid] = player;
 	reRenderZones();
@@ -563,9 +562,8 @@ function renderQueue(queue) {
 			clearTimeout(scrollTimeout);
 			var _this = this;
 			scrollTimeout = setTimeout(function () {
-				console.log("triggerd lazy")
 				lazyLoadImages(_this);
-			},300);
+			},150);
 
 		});
 		newContainer.appendChild(tempContainer);
@@ -581,14 +579,12 @@ function lazyLoadImages(container) {
 	// Find elements that are in viewport
 	var containerViewport = container.getBoundingClientRect();
 	// best estimate of starting point
-	var trackHeight = container.firstChild.clientHeight + 2;
+	var trackHeight = container.firstChild.scrollHeight;
 
 	// startIndex
 	var startIndex = Math.floor(container.scrollTop / trackHeight);
 	var currentNode = container.childNodes[startIndex];
 
-
-	console.log(startIndex, currentNode)
 	while (currentNode && currentNode.getBoundingClientRect().top < containerViewport.bottom) {
 		var img = currentNode.firstChild;
 		currentNode = currentNode.nextSibling;
@@ -596,7 +592,6 @@ function lazyLoadImages(container) {
 			continue;
 		}
 
-		console.log("loading", img)
 		// get image
 		img.src = img.dataset.src;
 		img.className = 'loaded';
