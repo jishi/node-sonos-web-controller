@@ -523,8 +523,8 @@ function renderFavorites(favorites) {
 
 function renderQueue(queue) {
 	var tempContainer = document.createDocumentFragment();
-
 	var trackIndex = queue.startIndex + 1;
+	var scrollTimeout;
 
 	queue.items.forEach(function (q) {
 		var li = document.createElement('li');
@@ -560,7 +560,13 @@ function renderQueue(queue) {
 		// This is a new queue
 		var newContainer = oldContainer.cloneNode(false);
 		newContainer.addEventListener('scroll', function (e) {
-			lazyLoadImages(this);
+			clearTimeout(scrollTimeout);
+			var _this = this;
+			scrollTimeout = setTimeout(function () {
+				console.log("triggerd lazy")
+				lazyLoadImages(_this);
+			},300);
+
 		});
 		newContainer.appendChild(tempContainer);
 		oldContainer.parentNode.replaceChild(newContainer, oldContainer);
@@ -575,10 +581,10 @@ function lazyLoadImages(container) {
 	// Find elements that are in viewport
 	var containerViewport = container.getBoundingClientRect();
 	// best estimate of starting point
-	var trackHeight = container.firstChild.clientHeight;
+	var trackHeight = container.firstChild.clientHeight + 2;
 
 	// startIndex
-	var startIndex = Math.floor(containerViewport.top / trackHeight);
+	var startIndex = Math.floor(container.scrollTop / trackHeight);
 	var currentNode = container.childNodes[startIndex];
 
 
