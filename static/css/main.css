@@ -85,7 +85,14 @@ h4 {
 	padding-top: 20px;
 	padding-left: 20px;
 	padding-bottom: 1px;
+	width: calc(100% - 220px);
+	overflow: hidden;
+	word-wrap: nowrap;
+}
 
+#status-container #current-track-info div p {
+	height: 36px;
+	width: 100%;
 }
 
 #status-container h6 {
@@ -104,7 +111,6 @@ h4 {
 
 #status-container p {
 	margin: 0;
-	margin-bottom: 20px;
 	font-size: 14px;
 }
 

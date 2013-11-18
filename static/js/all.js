@@ -170,6 +170,20 @@ function updateCurrentStatus() {
 	var selectedZone = Sonos.currentZoneCoordinator();
 	console.log("updating current", selectedZone)
 	document.getElementById("current-track-art").src =  selectedZone.state.currentTrack.albumArtURI;
+	// update favicon
+	var oldFavicon = document.getElementById("favicon");
+	var newFavicon = oldFavicon.cloneNode();
+	if (selectedZone.state.currentTrack.albumArtURI) {
+		newFavicon.href = selectedZone.state.currentTrack.albumArtURI;
+		newFavicon.type = "image/png";
+	} else {
+		newFavicon.href = "favicon.ico";
+		newFavicon.type = "image/x-icon";
+	}
+
+	document.getElementById('page-title').textContent = selectedZone.state.currentTrack.title + ' - Sonos Web Controller';
+
+	oldFavicon.parentNode.replaceChild(newFavicon, oldFavicon);
 	document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
 	document.getElementById("artist").textContent = selectedZone.state.currentTrack.artist;
 	document.getElementById("album").textContent = selectedZone.state.currentTrack.album;
