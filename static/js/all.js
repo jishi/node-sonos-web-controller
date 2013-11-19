@@ -253,23 +253,23 @@ function updateCurrentStatus() {
 
 	var repeat = document.getElementById("repeat");
 	if (selectedZone.playMode.repeat) {
-		repeat.src = repeat.src.replace("off", "on");
+		repeat.src = repeat.src.replace(/_off\.png/, "_on.png");
 	} else {
-		repeat.src = repeat.src.replace("on", "off");
+		repeat.src = repeat.src.replace(/_on\.png/, "_off.png");
 	}
 
 	var shuffle = document.getElementById("shuffle");
 	if (selectedZone.playMode.shuffle) {
-		shuffle.src = shuffle.src.replace("off", "on");
+		shuffle.src = shuffle.src.replace(/_off\.png/, "_on.png");
 	} else {
-		shuffle.src = shuffle.src.replace("on", "off");
+		shuffle.src = shuffle.src.replace(/_on\.png/, "_off.png");
 	}
 
 	var crossfade = document.getElementById("crossfade");
 	if (selectedZone.playMode.crossfade) {
-		crossfade.src = crossfade.src.replace("off", "on");
+		crossfade.src = crossfade.src.replace(/_off\.png/, "_on.png");
 	} else {
-		crossfade.src = crossfade.src.replace("on", "off");
+		crossfade.src = crossfade.src.replace(/_on\.png/, "_off.png");
 	}
 
 
