@@ -2,6 +2,7 @@ var http = require('http');
 var static = require('node-static');
 var io = require('socket.io');
 var fs = require('fs');
+var crypto = require('crypto');
 var SonosDiscovery = require('sonos-discovery');
 var discovery = new SonosDiscovery();
 var port = 8080;
@@ -20,8 +21,8 @@ var server = http.createServer(function (req, res) {
 
   if (/^\/getaa/.test(req.url)) {
     // this is a resource, download from player and put in cache folder
-    var b64url = new Buffer(req.url).toString('base64');
-    var fileName = './cache/' + b64url;
+    var md5url = crypto.createHash('md5').update(req.url).digest('hex');
+    var fileName = './cache/' + md5url;
 
     if (playerIps.length == 0) {
       for (var i in discovery.players) {
@@ -49,7 +50,7 @@ var server = http.createServer(function (req, res) {
           res2.pipe(cacheStream);
         } else if (res2.statusCode == 404) {
           // no image exists! link it to the default image.
-          console.log(res2.statusCode, 'linking', b64url)
+          console.log(res2.statusCode, 'linking', fileName)
           fs.linkSync('./lib/browse_missing_album_art.png', fileName);
           res2.resume();
         }
