@@ -11,10 +11,11 @@
 	</head>
 <body>
 	<header id="top-control">
-		<div id="master-mute">
+		<!--div id="master-mute">
 			<img src="images/tc_vol_speakers_normal.png" />
-		</div>
-		<div id="master-volume" /><img src="images/popover_vol_scrubber_normal.png" /></div>
+		</div-->
+		<div id="master-volume" class="volume-bar" /><img src="images/popover_vol_scrubber_normal.png" /></div>
+		<div id="player-volumes"></div>
 		<div id="controls">
 			<img id="prev" src="images/tc_now_playing_rwd_normal.png" />
 			<img id="play-pause" src="images/play_normal.png" />
@@ -25,9 +26,9 @@
 			<img class="left" src="images/tc_progress_container_left.png" />
 			<img class="right" src="images/tc_progress_container_right.png" />
 			<div class="content">
-				<img id="repeat" src="images/tc_progress_repeat_normal_off.png" />
-				<img id="shuffle" src="images/tc_progress_shuffle_normal_off.png" />
-
+				<img id="repeat" class="playback-mode" src="images/tc_progress_repeat_normal_off.png" />
+				<img id="shuffle"  class="playback-mode" src="images/tc_progress_shuffle_normal_off.png" />
+				<img id="crossfade"  class="playback-mode" src="images/tc_progress_crossfade_normal_off.png" />
 				<span id="countup">0:00</span>
 					<div id="position-info-control">
 						<div id="position-bar">
@@ -35,9 +36,6 @@
 						</div>
 					</div>
 				<span id="countdown">-0:00</span>
-
-				<img id="crossfade" src="images/tc_progress_crossfade_normal_off.png" />
-				<img src="images/tc_progress_equalizer_normal.png" />
 			</div>
 
 		</div>

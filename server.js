@@ -47,7 +47,7 @@ var server = http.createServer(function (req, res) {
         if (res2.statusCode == 200) {
           var cacheStream = fs.createWriteStream(fileName);
           res2.pipe(cacheStream);
-        } else {
+        } else if (res2.statusCode == 404) {
           // no image exists! link it to the default image.
           console.log(res2.statusCode, 'linking', b64url)
           fs.linkSync('./lib/browse_missing_album_art.png', fileName);
@@ -157,6 +157,18 @@ socketServer.sockets.on('connection', function (socket) {
     console.log(data)
     var player = discovery.getPlayerByUUID(data.uuid);
     player.seek(data.trackNo);
+  });
+
+  socket.on('playmode', function (data) {
+    var player = discovery.getPlayerByUUID(data.uuid);
+    for (var action in data.state) {
+      player[action](data.state[action]);
+    }
+  });
+
+  socket.on('volume', function (data) {
+    var player = discovery.getPlayerByUUID(data.uuid);
+    player.setVolume(data.volume);
   });
 
   socket.on("error", function (e) {

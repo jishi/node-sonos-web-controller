@@ -90,9 +90,20 @@ h4 {
 	word-wrap: nowrap;
 }
 
+#status-container #current-track-info img {
+	max-height: 180px;
+	max-width: 180px;
+}
+
 #status-container #current-track-info div p {
 	height: 36px;
 	width: 100%;
+}
+
+#status-container #next-track {
+	width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 #status-container h6 {
@@ -168,21 +179,41 @@ h4 {
 }
 
 #master-volume {
-	width: 180px;
-	height: 21px;
 	top: 28px;
 	left: 50px;
+	position: absolute;
+}
+
+#top-control .volume-bar {
+	width: 180px;
+	height: 21px;
 	border-radius: 15px;
 	border-top: 1px solid #303030;
 	border-bottom: 1px solid #707070;
-	position: absolute;
-
 	background-image: -moz-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
 	background-image: -webkit-linear-gradient(bottom, rgb(81,81,81) 5%, rgb(37,37,37) 95%);
 
 }
-#master-volume img {
+#top-control .volume-bar img {
 	margin: -1px 1px;
+}
+
+#player-volumes {
+	position: absolute;
+	top: 58px;
+	left: 40px;
+	padding: 10px;
+	background: #fff;
+	z-index: 100;
+	border-radius: 10px;
+	border: 3px #666 solid;
+}
+
+#player-volumes h6 {
+	color: #222;
+	margin: 0;
+	margin-top: 5px;
+	text-shadow: none;
 }
 
 #master-mute {
@@ -239,7 +270,7 @@ h4 {
 }
 
 #position-bar-scrubber {
-	margin-top: -15px;
+	margin-top: -14px;
 }
 
 #position-bar {
@@ -349,9 +380,4 @@ h4 {
 
 #queue-container {
 	height: calc(100% - 316px);
-}
-
-
-::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 }
