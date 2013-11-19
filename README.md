@@ -29,6 +29,7 @@ This software is in no way affiliated nor endorsed by Sonos inc.
 Change log
 ==========
 
+ * 0.4.4 use md5 hash for cached image instead (fixes ENAMETOOLONG probably)
  * 0.4.2 Added dynamic favicon and title. Make sure to use sonos-discovery 0.6.1 or later to fix albumArtURI error
  * 0.4.1 Added cover art for now playing
  * 0.4.0 Now has working queue listing. Will tweak it for better performance later
