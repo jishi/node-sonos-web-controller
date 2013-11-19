@@ -24,6 +24,33 @@ var Sonos = {
 var GUI = {
 	masterVolume: new VolumeSlider(document.getElementById('master-volume'), function (volume) {
 			socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: volume});
+		}, function (obj) {
+			// this logic controls show/hide of the individual volume controls
+			var playerVolumesNode = document.getElementById('player-volumes');
+			if (playerVolumesNode.classList.contains('hidden')) {
+				playerVolumesNode.classList.remove('hidden');
+				playerVolumesNode.classList.add('visible');
+				document.addEventListener('click', function hideVolume(e) {
+					// ignore the master volume
+					if (e.target == obj) return;
+					var playerVolumeContainer = document.getElementById('player-volumes');
+					function isChildOf(child, parent) {
+						if (child == parent) return true;
+						if (child == document) return false;
+						return isChildOf(child.parentNode, parent);
+					}
+					// and the playerVolume
+					if (isChildOf(e.target, playerVolumeContainer)) return;
+
+					// This is a random click, hide it and remove the container
+					playerVolumesNode.classList.add('hidden');
+					playerVolumesNode.classList.remove('visible');
+					document.removeEventListener('click', hideVolume);
+
+				});
+				return false;
+			}
+			return true;
 		}),
 	playerVolumes: {}
 };
@@ -71,10 +98,13 @@ socket.on('transport-state', function (player) {
 });
 
 socket.on('group-volume', function (data) {
-	if (Sonos.groupVolume.disableUpdate) return;
-	Sonos.players[data.uuid].groupState.volume = data.state.volume;
+	Sonos.players[data.uuid].groupState.volume = data.groupState.volume;
 	if (data.uuid != Sonos.currentState.selectedZone) return;
-	GUI.masterVolume.setVolume(data.state.volume);
+	GUI.masterVolume.setVolume(data.groupState.volume);
+	for (var uuid in data.playerVolumes) {
+		Sonos.players[data.uuid].state.volume = data.playerVolumes[uuid];
+		GUI.playerVolumes[uuid].setVolume(data.playerVolumes[uuid]);
+	}
 });
 
 socket.on('favorites', function (data) {
@@ -332,8 +362,9 @@ function zpad(number, width) {
 	return padding + str;
 }
 
-function VolumeSlider(containerObj, callback) {
+function VolumeSlider(containerObj, callback, clickCallback) {
 	var state = {
+		cursorX: 0,
 		originalX: 0,
 		maxX: 0,
 		currentX: 0,
@@ -354,7 +385,6 @@ function VolumeSlider(containerObj, callback) {
 	function setScrubberPosition(volume) {
 		var offset = Math.round(state.maxX * volume / 100);
 		state.currentX = offset;
-		console.log(state.slider, volume, offset)
 		state.slider.style.marginLeft = offset + 'px';
 		state.volume = volume;
 	}
@@ -371,17 +401,21 @@ function VolumeSlider(containerObj, callback) {
 		if (newVolume < 0) newVolume = 0;
 		if (newVolume > 100) newVolume = 100;
 
-		clearTimeout(Sonos.groupVolume.disableTimer);
-		Sonos.groupVolume.disableUpdate = true;
-		Sonos.groupVolume.disableTimer = setTimeout(function () {Sonos.groupVolume.disableUpdate = false}, 800);
+		setVolume( newVolume );
+		clearTimeout(state.disableTimer);
+		state.disableUpdate = true;
+		state.disableTimer = setTimeout(function () {state.disableUpdate = false}, 800);
 
 		//socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: newVolume});
 		//newVolume = Sonos.currentZoneCoordinator().groupState.volume = newVolume;
-		setVolume( newVolume );
+
 
 	}
 
 	function handleClick(e) {
+		// Be able to cancel this from a callback if necessary
+		if (typeof clickCallback == "function" && clickCallback(this) == false) return;
+
 		if (e.target.tagName == "IMG") return;
 
 		var newVolume;
@@ -397,25 +431,23 @@ function VolumeSlider(containerObj, callback) {
 		if (newVolume > 100) newVolume = 100;
 
 		setVolume(newVolume);
-
 		clearTimeout(state.disableTimer);
-		Sonos.currentZoneCoordinator().groupState.volume = newVolume;
 		state.disableUpdate = true;
-		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 1500);
-
+		state.disableTimer = setTimeout(function () {state.disableUpdate = false}, 800);
 	}
 
 	function onDrag(e) {
-		var deltaX = e.clientX - state.originalX;
-		var nextX = state.currentX + deltaX;
+		var deltaX = e.clientX - state.cursorX;
+		var nextX = state.originalX + deltaX;
 
 		if ( nextX > state.maxX ) nextX = state.maxX;
 		else if ( nextX < 1) nextX = 1;
 
-		state.slider.style.marginLeft = nextX + 'px';
+		//state.slider.style.marginLeft = nextX + 'px';
 
 		// calculate percentage
 		var volume = Math.floor(nextX / state.maxX * 100);
+		console.log("drag", volume, nextX, state.maxX, deltaX)
 		setVolume(volume);
 	}
 
@@ -424,8 +456,12 @@ function VolumeSlider(containerObj, callback) {
 	state.slider = containerObj.querySelector('img');
 	state.currentX = state.slider.offsetLeft;
 
+	console.log(state)
+
 	state.slider.addEventListener('mousedown', function (e) {
-		state.originalX = e.clientX;
+		console.log(state)
+		state.cursorX = e.clientX;
+		state.originalX = state.currentX;
 		clearTimeout(state.disableTimer);
 		state.disableUpdate = true;
 		document.addEventListener('mousemove', onDrag);
@@ -539,6 +575,9 @@ function renderVolumes() {
 
 		GUI.playerVolumes[uuid].setVolume(Sonos.players[uuid].state.volume);
 	});
+
+	newWrapper.classList.add('hidden');
+	newWrapper.classList.remove('loading');
 }
 
 function reRenderZones() {
@@ -667,3 +706,4 @@ function lazyLoadImages(container) {
 	}
 
 }
+

@@ -44,15 +44,17 @@ var server = http.createServer(function (req, res) {
         port: 1400,
         path: req.url
       }, function (res2) {
-
+        console.log(res2.statusCode);
         if (res2.statusCode == 200) {
           var cacheStream = fs.createWriteStream(fileName);
           res2.pipe(cacheStream);
         } else if (res2.statusCode == 404) {
           // no image exists! link it to the default image.
           console.log(res2.statusCode, 'linking', fileName)
-          fs.linkSync('./lib/browse_missing_album_art.png', fileName);
-          res2.resume();
+          fs.link('./lib/browse_missing_album_art.png', fileName, function (e) {
+            res2.resume();
+            if (e) console.log(e);
+          });
         }
 
         res2.on('end', function () {

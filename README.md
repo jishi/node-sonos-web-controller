@@ -29,6 +29,7 @@ This software is in no way affiliated nor endorsed by Sonos inc.
 Change log
 ==========
 
+ * 0.5.0 Working player volume controls. Removed mute for the time being. Working shuffle/repeat/crossfade. requires sonos-discovery 0.7.x
  * 0.4.4 use md5 hash for cached image instead (fixes ENAMETOOLONG probably)
  * 0.4.2 Added dynamic favicon and title. Make sure to use sonos-discovery 0.6.1 or later to fix albumArtURI error
  * 0.4.1 Added cover art for now playing
