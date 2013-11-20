@@ -208,15 +208,21 @@ h4 {
 	border-radius: 10px;
 	border: 3px #666 solid;
 	opacity: 1;
+	-webkit-transition: opacity 0.5s, -webkit-transform 0.3s;
+	transition: opacity 0.5s, transform 0.3s;
+
 }
 
 #player-volumes.loading {
 	visibility: hidden;
+	-webkit-transform: scale(0);
+	transform: scale(0);
 }
 
 #player-volumes.hidden {
 	opacity: 0;
-	display: none;
+	-webkit-transform: scale(0);
+	transform: scale(0);
 }
 
 #player-volumes h6 {
