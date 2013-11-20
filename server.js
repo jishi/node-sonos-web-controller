@@ -11,6 +11,7 @@ var fileServer = new static.Server('./static');
 
 var playerIps = [];
 var playerCycle = 0;
+var queues = {};
 
 fs.mkdir('./cache', function (e) {
   if (e)
@@ -141,19 +142,7 @@ socketServer.sockets.on('connection', function (socket) {
   });
 
   socket.on('queue', function (data) {
-    function getQueue(startIndex, requestedCount) {
-      var player = discovery.getPlayerByUUID(data.uuid);
-      player.getQueue(startIndex, requestedCount, function (success, queue) {
-        if (!success) return;
-        socket.emit('queue', queue);
-        if (queue.startIndex + queue.numberReturned < queue.totalMatches) {
-          getQueue(queue.startIndex + queue.numberReturned, 100);
-        }
-      });
-    }
-
-    getQueue(0, 100);
-
+    loadQueue(data.uuid, socket);
   });
 
   socket.on('seek', function (data) {
@@ -200,7 +189,42 @@ discovery.on('favorites', function (data) {
   socketServer.sockets.emit('favorites', data);
 });
 
+discovery.on('queue-changed', function (data) {
+  console.log('queue-changed', data);
+  delete queues[data.uuid];
+  loadQueue(data.uuid, socketServer.sockets);
+});
 
+function loadQueue(uuid, socket) {
+  function getQueue(startIndex, requestedCount) {
+    var player = discovery.getPlayerByUUID(uuid);
+    player.getQueue(startIndex, requestedCount, function (success, queue) {
+      if (!success) return;
+      socket.emit('queue', {uuid: uuid, queue: queue});
+
+      if (!queues[uuid] || queue.startIndex == 0) {
+        queues[uuid] = queue;
+      } else {
+        queues[uuid].items = queues[uuid].items.concat(queue.items);
+      }
+
+      if (queue.startIndex + queue.numberReturned < queue.totalMatches) {
+        getQueue(queue.startIndex + queue.numberReturned, 100);
+      }
+    });
+  }
+
+  if (!queues[uuid]) {
+    getQueue(0, 100);
+  } else {
+    var queue = queues[uuid];
+    queue.numberReturned = queue.items.length;
+    socket.emit('queue', {uuid: uuid, queue: queue});
+    if (queue.totalMatches > queue.items.length) {
+      getQueue(queue.items.items.length, 100);
+    }
+  }
+}
 
 // Attach handler for socket.io
 

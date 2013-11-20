@@ -112,8 +112,9 @@ socket.on('favorites', function (data) {
 });
 
 socket.on('queue', function (data) {
-	console.log("received queue", data.startIndex, data.totalMatches);
-	renderQueue(data);
+	console.log("received queue", data.uuid);
+	if (data.uuid != Sonos.currentState.selectedZone) return;
+	renderQueue(data.queue);
 });
 
 ///
