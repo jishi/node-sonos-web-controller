@@ -198,6 +198,12 @@ h4 {
 	margin: -1px 1px;
 }
 
+#top-control #repeat,
+#top-control #shuffle,
+#top-control #crossfade {
+	transition: background 0.1s;
+}
+
 #top-control #repeat:active,
 #top-control #shuffle:active,
 #top-control #crossfade:active {

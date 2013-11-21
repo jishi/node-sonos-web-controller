@@ -98,9 +98,11 @@ socket.on('transport-state', function (player) {
 });
 
 socket.on('group-volume', function (data) {
+
 	Sonos.players[data.uuid].groupState.volume = data.groupState.volume;
-	if (data.uuid != Sonos.currentState.selectedZone) return;
-	GUI.masterVolume.setVolume(data.groupState.volume);
+	if (data.uuid == Sonos.currentState.selectedZone) {
+		GUI.masterVolume.setVolume(data.groupState.volume);
+	}
 	for (var uuid in data.playerVolumes) {
 		Sonos.players[data.uuid].state.volume = data.playerVolumes[uuid];
 		GUI.playerVolumes[uuid].setVolume(data.playerVolumes[uuid]);
