@@ -221,7 +221,7 @@ function loadQueue(uuid, socket) {
     queue.numberReturned = queue.items.length;
     socket.emit('queue', {uuid: uuid, queue: queue});
     if (queue.totalMatches > queue.items.length) {
-      getQueue(queue.items.items.length, 100);
+      getQueue(queue.items.length, 100);
     }
   }
 }
