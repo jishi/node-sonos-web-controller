@@ -198,6 +198,12 @@ h4 {
 	margin: -1px 1px;
 }
 
+#top-control #repeat:active,
+#top-control #shuffle:active,
+#top-control #crossfade:active {
+	background: #aaa;
+}
+
 #player-volumes {
 	position: absolute;
 	top: 58px;
