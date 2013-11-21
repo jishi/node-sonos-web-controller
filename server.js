@@ -5,7 +5,22 @@ var fs = require('fs');
 var crypto = require('crypto');
 var SonosDiscovery = require('sonos-discovery');
 var discovery = new SonosDiscovery();
-var port = 8080;
+var settings = {
+  port: 8080,
+  cacheDir: './cache'
+}
+
+try {
+  var userSettings = require('./settings.json');
+} catch (e) {
+  console.log('no settings file found, will only use default settings');
+}
+
+if (userSettings) {
+  for (var i in userSettings) {
+    settings[i] = userSettings[i];
+  }
+}
 
 var fileServer = new static.Server('./static');
 
@@ -13,17 +28,19 @@ var playerIps = [];
 var playerCycle = 0;
 var queues = {};
 
-fs.mkdir('./cache', function (e) {
+fs.mkdir(settings.cacheDir, function (e) {
   if (e)
     console.log('creating cache dir failed, this is probably normal', e);
 });
+
+
 
 var server = http.createServer(function (req, res) {
 
   if (/^\/getaa/.test(req.url)) {
     // this is a resource, download from player and put in cache folder
     var md5url = crypto.createHash('md5').update(req.url).digest('hex');
-    var fileName = './cache/' + md5url;
+    var fileName = settings.cacheDir + '/' + md5url;
 
     if (playerIps.length == 0) {
       for (var i in discovery.players) {
@@ -228,6 +245,6 @@ function loadQueue(uuid, socket) {
 
 // Attach handler for socket.io
 
-server.listen(port);
+server.listen(settings.port);
 
-console.log("http server listening on port", port);
+console.log("http server listening on port", settings.port);
