@@ -41,6 +41,7 @@ This software is in no way affiliated nor endorsed by Sonos inc.
 Change log
 ==========
 
+ * 0.5.3 Handle switching back to queue from radio stream
  * 0.5.2 Supports settings.json for customization. Port and cacheDir to start with.
  * 0.5.0 Working player volume controls. Removed mute for the time being. Working shuffle/repeat/crossfade. requires sonos-discovery 0.7.x
  * 0.4.4 use md5 hash for cached image instead (fixes ENAMETOOLONG probably)

@@ -163,9 +163,19 @@ socketServer.sockets.on('connection', function (socket) {
   });
 
   socket.on('seek', function (data) {
-    console.log(data)
     var player = discovery.getPlayerByUUID(data.uuid);
-    player.seek(data.trackNo);
+    if (player.avTransportUri.startsWith('x-rincon-queue')) {
+      player.seek(data.trackNo);
+      return;
+    }
+
+    // Player is not using queue, so start queue first
+    player.setAVTransportURI('x-rincon-queue:' + player.uuid + '#0', '', function (success) {
+      if (success)
+        player.seek(data.trackNo, function (success) {
+          player.play();
+        });
+    });
   });
 
   socket.on('playmode', function (data) {
