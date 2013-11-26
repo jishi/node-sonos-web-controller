@@ -315,6 +315,25 @@ function updateControllerState() {
 
 	// Fix volume
 	GUI.masterVolume.setVolume(currentZone.groupState.volume);
+
+	// fix volume container
+
+	var allVolumes = {};
+	for (var uuid in Sonos.players) {
+		// is this in group?
+		allVolumes[uuid] = null;
+	}
+
+	Sonos.grouping[Sonos.currentState.selectedZone].forEach(function (uuid) {
+		document.getElementById("volume-" + uuid).classList.remove("hidden");
+		delete allVolumes[uuid];
+	});
+
+	// now, hide the ones left
+	for (var uuid in allVolumes) {
+		document.getElementById("volume-" + uuid).classList.add("hidden");
+	}
+
 }
 
 // Update position
@@ -555,12 +574,15 @@ function renderVolumes() {
 	for (var i in Sonos.players) {
 		var player = Sonos.players[i];
 		var playerVolumeBar = masterVolume.cloneNode(true);
-		playerVolumeBar.id = 'volume-' + player.uuid;
+		var playerVolumeBarContainer = document.createElement('div');
+		playerVolumeBarContainer.id = "volume-" + player.uuid;
+		playerVolumeBar.id = "";
 		playerVolumeBar.dataset.uuid = player.uuid;
 		var playerName = document.createElement('h6');
 		playerName.textContent = player.roomName;
-		newWrapper.appendChild(playerName);
-		newWrapper.appendChild(playerVolumeBar);
+		playerVolumeBarContainer.appendChild(playerName);
+		playerVolumeBarContainer.appendChild(playerVolumeBar);
+		newWrapper.appendChild(playerVolumeBarContainer);
 		playerNodes.push({uuid: player.uuid, node: playerVolumeBar});
 	}
 
