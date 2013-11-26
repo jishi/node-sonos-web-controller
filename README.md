@@ -36,6 +36,21 @@ To persist settings between updates, you can create a file called settings.json 
 
 The above are the defaults. Change them as you like and it will take precedence over the default ones.
 
+Installation
+============
+
+Easiest way to install this today would be to use git. Make sure and install node.js and npm (node package manager) for your platform. Make sure that the node and npm command works. If not, you will fail miserably. Install git for your platform. Make sure the git command works as well.
+
+Create a folder on your computer where you want the files to reside (for example, c:\node\sonos-web-controller or /opt/node/sonos-web-controller). Now, using a command prompt/terminal, stand in that directory, and do the following:
+
+	git clone https://github.com/jishi/node-sonos-web-controller.git .
+	npm install
+	node server.js
+
+Now, visit http://localhost:8080. For running this as a service under linux, I suggest using pm2 (https://github.com/Unitech/pm2). For windows you are on your own for now. It would be interesting to know if this would run under IIS using iisnode (https://github.com/tjanczuk/iisnode), but it might give you problems with socket.io if IIS will proxy all requests. If you have tested it, please let me know the result.
+
+
+
 This software is in no way affiliated nor endorsed by Sonos inc.
 
 Change log
