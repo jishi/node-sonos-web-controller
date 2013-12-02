@@ -1,0 +1,123 @@
+html {}
+h1,h2,h3,h4,h5,h6,p {
+	padding: 0;
+	margin: 0;
+}
+* {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+body {
+	margin: 0;
+	padding: 0;
+	height: 100vh;
+	background: #000;
+	font-size: 23px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	padding-top: 20px;
+	overflow: hidden;
+	letter-spacing: 0.01em;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	color: rgb(4,90,218);
+}
+
+body #main {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	color: #fff;
+	position: relative;
+}
+
+.track-info {
+	width: 50vw;
+	position: absolute;
+	left: calc(50% - 25%);
+	transition: left 1s, opacity 1s;
+}
+
+#next-track-info {
+	left: calc(50% - 25% + 52%);
+	opacity: 0.5;
+}
+
+#prev-track-info {
+	left: calc(50% - 25% - 52%);
+	opacity: 0.5;
+}
+
+#dead-track-info {
+		left: calc(50% - 25% - 102%);
+
+}
+
+#upcoming-track-info {
+	left: calc(50% - 25% + 102%);
+	opacity: 0;
+
+}
+
+.track-info img {
+	display: block;
+	width: 100%;
+	vertical-align: top;
+}
+
+.track-info div {
+	margin-top: 10px;
+	text-align: left;
+	width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+
+
+.track-info div .track {
+	font-weight: 700;
+}
+
+
+
+@font-face {
+	font-family: 'BrownRegular';
+	src: url('fonts/lineto-brown-regular.eot');
+	src: url('fonts/lineto-brown-regular.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/lineto-brown-regular.woff') format('woff'),
+		 url('fonts/lineto-brown-regular.ttf') format('truetype'),
+		 url('fonts/lineto-brown-regular.svg#BrownRegular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'BrownItalic';
+	src: url('fonts/lineto-brown-italic.eot');
+	src: url('fonts/lineto-brown-italic.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/lineto-brown-italic.woff') format('woff'),
+		 url('fonts/lineto-brown-italic.ttf') format('truetype'),
+		 url('fonts/lineto-brown-italic.svg#BrownItalic') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'BrownBold';
+	src: url('fonts/lineto-brown-bold.eot');
+	src: url('fonts/lineto-brown-bold.eot?#iefix') format('embedded-opentype'),
+		 url('fonts/lineto-brown-bold.woff') format('woff'),
+		 url('fonts/lineto-brown-bold.ttf') format('truetype'),
+		 url('fonts/lineto-brown-bold.svg#BrownBold') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'BrownLight';
+	src: url('fonts/Brown-Light.otf');
+	font-weight: normal;
+	font-style: normal;
+}

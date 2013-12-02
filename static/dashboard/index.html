@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="dashboard.css" />
+		<link href='http://fonts.googleapis.com/css?family=Roboto:300,500,900,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+		  var socket = io.connect('/');
+		</script>
+		<title id="page-title">Sonos Dashboard</title>
+		<link id="favicon" rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	</head>
+	<body>
+		<div id="main">
+			<div id="prev-track-info" class="track-info">
+				<img class="track-art" />
+				<div>
+					<span class="track"></span>
+					<span class="artist"></span>
+
+				</div>
+			</div>
+			<div id="current-track-info" class="track-info">
+				<img class="track-art" />
+				<div>
+					<span class="track"></span>
+					<span class="artist"></span>
+
+				</div>
+			</div>
+			<div id="next-track-info" class="track-info">
+				<img class="track-art" />
+				<div>
+					<span class="track"></span>
+					<span class="artist"></span>
+
+				</div>
+			</div>
+		</div>
+		<script>
+		var currentZone;
+		var currentTrackNo = 0;
+		socket.on('topology-change', function (data) {
+			var currentZoneUUID;
+
+			var zones = {};
+			// find the biggest zone
+			data.forEach(function (i) {
+				if (!zones[i.coordinator]) zones[i.coordinator] = 1;
+				if (++zones[i.coordinator] > (zones[currentZoneUUID]||0)) currentZoneUUID = i.coordinator;
+			});
+
+			data.forEach(function (i) {
+				if (i.uuid == currentZoneUUID) {
+					currentZone = i;
+					return false;
+				}
+			});
+
+			console.log(currentZone.state)
+			renderInfo();
+
+		});
+		socket.on('transport-state', function (player) {
+			if (currentZone.uuid != player.uuid) return;
+
+			player.stateTime = new Date().valueOf();
+			currentZone = player;
+			renderInfo();
+		});
+
+		function renderInfo() {
+
+
+			if (currentZone.state.nextTrack) {
+				console.log(currentZone, currentTrackNo)
+				if (currentTrackNo > 0 && currentZone.state.trackNo != currentTrackNo) {
+					// rotate
+					var next = document.getElementById('next-track-info'),
+						prev = document.getElementById('prev-track-info'),
+						current = document.getElementById('current-track-info');
+
+					var newNext = next.cloneNode(true);
+					newNext.classList.remove('track-info');
+					newNext.id = "upcoming-track-info";
+
+					var clearNextImage = true;
+
+					next.parentNode.appendChild(newNext);
+					currentTrackNo = currentZone.state.trackNo;
+
+					newNext.classList.add('track-info');
+					var nextTrack = currentZone.state.nextTrack;
+					newNext.querySelector('.track').textContent = nextTrack.title;
+					newNext.querySelector('.artist').textContent = nextTrack.artist;
+					newNext.querySelector(".track-art").src = nextTrack.albumArtURI;
+
+					prev.id = 'dead-track-info';
+					current.id = 'prev-track-info';
+					next.id = 'current-track-info';
+					setTimeout(function () {
+						newNext.id = 'next-track-info';
+					}, 40);
+
+
+				} else {
+					if (currentTrackNo == 0) {
+						currentTrackNo = currentZone.state.trackNo;
+					}
+					var nextTrack = currentZone.state.nextTrack;
+					document.getElementById("next-track-info").querySelector('.track').textContent = nextTrack.title;
+					document.getElementById("next-track-info").querySelector('.artist').textContent = nextTrack.artist;
+					document.getElementById("next-track-info").querySelector(".track-art").src = nextTrack.albumArtURI;
+				}
+
+
+
+
+			}
+
+			document.getElementById("current-track-info").querySelector(".track").textContent = currentZone.state.currentTrack.title;
+			document.getElementById("current-track-info").querySelector(".artist").textContent = currentZone.state.currentTrack.artist;
+			document.getElementById("current-track-info").querySelector(".track-art").src = currentZone.state.currentTrack.albumArtURI;
+
+
+
+
+		}
+		</script>
+	</body>
+</html>
