@@ -26,6 +26,45 @@ h4 {
 	position: relative;
 }
 
+#top-control #play-pause,
+#top-control #prev,
+#top-control #next {
+	border-radius: 22px;
+	width: 44px;
+	height: 46px;
+	border-top: 2px solid rgb(138,138,138);
+	border-bottom: 2px solid rgb(46,46,46);
+	background: linear-gradient(to bottom, rgb(128,128,128), rgb(72,72,72));
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	vertical-align: middle;
+	box-shadow: 0 0 1px rgb(56,56,56);
+}
+
+#top-control #prev,
+#top-control #next {
+	width: 32px;
+	height: 33px;
+}
+
+#top-control #play-pause:hover,
+#top-control #prev:hover,
+#top-control #next:hover {
+	background: linear-gradient(to bottom, rgb(130,130,130), rgb(90,90,90));
+	border-top: 2px solid rgb(150,150,150);
+	border-bottom: 2px solid rgb(64,64,64);
+
+}
+
+#top-control #play-pause:active,
+#top-control #prev:active,
+#top-control #next:active {
+	background: linear-gradient(to top, rgb(100,100,100), rgb(64,64,64));
+	border-top: 2px solid rgb(46,46,46);
+	border-bottom: 2px solid rgb(64,64,64);
+
+}
+
 /* grey container */
 #top-control {
 	border-radius: 5px;
@@ -220,8 +259,8 @@ h4 {
 	border-radius: 10px;
 	border: 3px #666 solid;
 	opacity: 1;
-	-webkit-transition: opacity 0.5s, -webkit-transform 0.3s;
-	transition: opacity 0.5s, transform 0.3s;
+	-webkit-transition: -webkit-opacity 0.3s, -webkit-transform 0.3s;
+	transition: opacity 0.3s, transform 0.3s;
 
 }
 
@@ -294,7 +333,7 @@ h4 {
 }
 
 #position-info .content #countup {
-	margin-left: 26px;
+	margin-left: 8px;
 }
 
 #position-info .content #countdown {
@@ -372,11 +411,25 @@ h4 {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	padding-bottom: 2px;
+	padding: 1px 0 1px 0;
 	font-size: 14px;
 	width: 100%;
-
+	transition: all 0.15s;
 }
+
+#favorites-container li:hover,
+#queue-container li:hover {
+	background: rgba(255,255,255,0.05);
+	outline: none;
+}
+
+#favorites-container li:focus,
+#queue-container li:focus {
+	background: rgba(255,255,255,0.15);
+	outline: none;
+}
+
+
 
 #favorites-container li img,
 #queue-container li img {

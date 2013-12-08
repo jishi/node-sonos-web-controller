@@ -34,13 +34,16 @@ var GUI = {
 					// ignore the master volume
 					if (e.target == obj) return;
 					var playerVolumeContainer = document.getElementById('player-volumes');
-					function isChildOf(child, parent) {
-						if (child == parent) return true;
+					function isChildOf(child) {
+						// ignore master volume elements
+						if (child == obj) return true;
+						// ignore player volume container
+						if (child == playerVolumeContainer) return true;
 						if (child == document) return false;
-						return isChildOf(child.parentNode, parent);
+						return isChildOf(child.parentNode);
 					}
 					// and the playerVolume
-					if (isChildOf(e.target, playerVolumeContainer)) return;
+					if (isChildOf(e.target)) return;
 
 					// This is a random click, hide it and remove the container
 					playerVolumesNode.classList.add('hidden');
@@ -308,9 +311,9 @@ function updateControllerState() {
 	var playPauseButton = document.getElementById('play-pause');
 
 	if (state == "PLAYING") {
-		playPauseButton.src = '/images/pause_normal.png';
+		playPauseButton.src = '/svg/pause.svg';
 	} else {
-		playPauseButton.src = '/images/play_normal.png';
+		playPauseButton.src = '/svg/play.svg';
 	}
 
 	// Fix volume
@@ -636,6 +639,8 @@ function renderFavorites(favorites) {
 	var oldContainer = document.getElementById('favorites-container');
 	var newContainer = oldContainer.cloneNode(false);
 
+	var i = 0;
+
 	favorites.forEach(function (favorite) {
 		var li = document.createElement('li');
 		li.dataset.title = favorite.title;
@@ -645,6 +650,7 @@ function renderFavorites(favorites) {
 		albumArt.src = favorite.albumArtURI;
 		li.appendChild(albumArt);
 		li.appendChild(span);
+		li.tabIndex = i++;
 		newContainer.appendChild(li);
 	});
 
@@ -661,6 +667,7 @@ function renderQueue(queue) {
 		var li = document.createElement('li');
 		li.dataset.title = q.uri;
 		li.dataset.trackNo = trackIndex++;
+		li.tabIndex = trackIndex;
 
 		var albumArt = document.createElement('img');
 		//albumArt.src = q.albumArtURI;
