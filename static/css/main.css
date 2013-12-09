@@ -28,7 +28,8 @@ h4 {
 
 #top-control #play-pause,
 #top-control #prev,
-#top-control #next {
+#top-control #next,
+.mute-button {
 	border-radius: 22px;
 	width: 44px;
 	height: 46px;
@@ -42,14 +43,16 @@ h4 {
 }
 
 #top-control #prev,
-#top-control #next {
+#top-control #next,
+.mute-button {
 	width: 32px;
 	height: 33px;
 }
 
 #top-control #play-pause:hover,
 #top-control #prev:hover,
-#top-control #next:hover {
+#top-control #next:hover,
+.mute-button:hover {
 	background: linear-gradient(to bottom, rgb(130,130,130), rgb(90,90,90));
 	border-top: 2px solid rgb(150,150,150);
 	border-bottom: 2px solid rgb(64,64,64);
@@ -58,7 +61,8 @@ h4 {
 
 #top-control #play-pause:active,
 #top-control #prev:active,
-#top-control #next:active {
+#top-control #next:active,
+.mute-button:active {
 	background: linear-gradient(to top, rgb(100,100,100), rgb(64,64,64));
 	border-top: 2px solid rgb(46,46,46);
 	border-bottom: 2px solid rgb(64,64,64);
@@ -285,6 +289,14 @@ h4 {
 	margin: 0;
 	margin-top: 5px;
 	text-shadow: none;
+	margin-bottom: 5px;
+}
+
+#player-voumes .mute-button,
+#player-volumes .volume-bar {
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 15px;
 }
 
 #master-mute {

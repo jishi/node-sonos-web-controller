@@ -571,6 +571,7 @@ function renderVolumes() {
 	var oldWrapper = document.getElementById('player-volumes');
 	var newWrapper = oldWrapper.cloneNode(false);
 	var masterVolume = document.getElementById('master-volume');
+	var masterMute = document.getElementById('master-mute');
 
 	var playerNodes = [];
 
@@ -582,8 +583,12 @@ function renderVolumes() {
 		playerVolumeBar.id = "";
 		playerVolumeBar.dataset.uuid = player.uuid;
 		var playerName = document.createElement('h6');
+		var playerMute = masterMute.cloneNode(true);
+		playerMute.id = "";
+		playerMute.className = "mute-button";
 		playerName.textContent = player.roomName;
 		playerVolumeBarContainer.appendChild(playerName);
+		playerVolumeBarContainer.appendChild(playerMute);
 		playerVolumeBarContainer.appendChild(playerVolumeBar);
 		newWrapper.appendChild(playerVolumeBarContainer);
 		playerNodes.push({uuid: player.uuid, node: playerVolumeBar});
