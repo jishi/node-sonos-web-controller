@@ -112,6 +112,11 @@ socket.on('group-volume', function (data) {
 	}
 });
 
+socket.on('group-mute', function (data) {
+	Sonos.players[data.uuid].groupState = data.state;
+	updateControllerState();
+});
+
 socket.on('favorites', function (data) {
 	renderFavorites(data);
 });
@@ -152,6 +157,24 @@ document.getElementById('zone-container').addEventListener('click', function (e)
 	socket.emit('queue', {uuid: Sonos.currentState.selectedZone});
 
 }, true);
+
+document.getElementById('master-mute').addEventListener('click', function () {
+
+	var action;
+	// Find state of current player
+	var player = Sonos.currentZoneCoordinator();
+
+	// current state
+	var mute = player.groupState.mute;
+	socket.emit('group-mute', {uuid: player.uuid, mute: !mute});
+
+	// update
+	if (mute)
+		this.src = this.src.replace(/_on\.svg/, '_off.svg');
+	else
+		this.src = this.src.replace(/_off\.svg/, '_on.svg');
+
+});
 
 document.getElementById('play-pause').addEventListener('click', function () {
 
@@ -318,6 +341,14 @@ function updateControllerState() {
 
 	// Fix volume
 	GUI.masterVolume.setVolume(currentZone.groupState.volume);
+
+	// fix mute
+	var masterMute = document.getElementById('master-mute');
+	if (currentZone.groupState.mute) {
+		masterMute.src = "/svg/mute_on.svg";
+	} else {
+		masterMute.src = "/svg/mute_off.svg";
+	}
 
 	// fix volume container
 

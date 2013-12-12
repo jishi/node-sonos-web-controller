@@ -29,8 +29,8 @@ var playerCycle = 0;
 var queues = {};
 
 fs.mkdir(settings.cacheDir, function (e) {
-  if (e)
-    console.log('creating cache dir failed, this is probably normal', e);
+  if (e && e.code != 'EEXIST')
+    console.log('creating cache dir failed!', e);
 });
 
 
@@ -190,6 +190,11 @@ socketServer.sockets.on('connection', function (socket) {
     player.setVolume(data.volume);
   });
 
+  socket.on('group-mute', function (data) {
+    var player = discovery.getPlayerByUUID(data.uuid);
+    player.groupMute(data.mute);
+  });
+
   socket.on("error", function (e) {
     console.log(e);
   })
@@ -210,6 +215,11 @@ discovery.on('transport-state', function (data) {
 
 discovery.on('group-volume', function (data) {
   socketServer.sockets.emit('group-volume', data);
+});
+
+discovery.on('group-mute', function (data) {
+  console.log(data)
+  socketServer.sockets.emit('group-mute', data);
 });
 
 discovery.on('favorites', function (data) {
