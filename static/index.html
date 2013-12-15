@@ -14,7 +14,9 @@
 
 		<img  id="master-mute" class="mute-button" src="svg/mute_off.svg" />
 		<div id="master-volume" class="volume-bar" /><img src="images/popover_vol_scrubber_normal.png" /></div>
-		<div id="player-volumes" class="loading"></div>
+		<div id="player-volumes-container">
+			<div id="player-volumes" class="loading"></div>
+		</div>
 		<div id="controls">
 			<img id="prev" src="svg/prev.svg" />
 			<img id="play-pause" src="svg/pause.svg" />
@@ -31,7 +33,7 @@
 				<span id="countup">0:00</span>
 					<div id="position-info-control">
 						<div id="position-bar">
-							<img id="position-bar-scrubber" src="images/tc_progressbar_scrubber_normal.png" />
+							<div id="position-bar-scrubber"></div>
 						</div>
 					</div>
 				<span id="countdown">-0:00</span>

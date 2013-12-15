@@ -56,6 +56,7 @@ This software is in no way affiliated nor endorsed by Sonos inc.
 Change log
 ==========
 
+ * 0.5.7 Working progressbar (drag and slide). Working player mute. Requires sonos-discovery 0.8.1
  * 0.5.6 Working master mute. Some minor UI improvements
  * 0.5.3 Handle switching back to queue from radio stream
  * 0.5.2 Supports settings.json for customization. Port and cacheDir to start with.

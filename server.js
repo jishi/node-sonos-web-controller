@@ -191,9 +191,21 @@ socketServer.sockets.on('connection', function (socket) {
   });
 
   socket.on('group-mute', function (data) {
+    console.log(data)
     var player = discovery.getPlayerByUUID(data.uuid);
     player.groupMute(data.mute);
   });
+
+  socket.on('mute', function (data) {
+    var player = discovery.getPlayerByUUID(data.uuid);
+    player.mute(data.mute);
+  });
+
+  socket.on('track-seek', function (data) {
+    var player = discovery.getPlayerByUUID(data.uuid);
+    player.trackSeek(data.elapsed);
+  });
+
 
   socket.on("error", function (e) {
     console.log(e);
@@ -220,6 +232,11 @@ discovery.on('group-volume', function (data) {
 discovery.on('group-mute', function (data) {
   console.log(data)
   socketServer.sockets.emit('group-mute', data);
+});
+
+discovery.on('mute', function (data) {
+  console.log(data)
+  socketServer.sockets.emit('mute', data);
 });
 
 discovery.on('favorites', function (data) {
