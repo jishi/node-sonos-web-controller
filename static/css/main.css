@@ -307,11 +307,11 @@ h4 {
 	margin-bottom: 5px;
 }
 
-#player-voumes .mute-button,
 #player-volumes .volume-bar {
 	display: inline-block;
 	vertical-align: middle;
 	margin-left: 15px;
+	position: relative;
 }
 
 #master-mute {

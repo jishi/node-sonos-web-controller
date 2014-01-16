@@ -513,21 +513,16 @@ function VolumeSlider(containerObj, callback, clickCallback) {
 		if ( nextX > state.maxX ) nextX = state.maxX;
 		else if ( nextX < 1) nextX = 1;
 
-		//state.slider.style.marginLeft = nextX + 'px';
-
 		// calculate percentage
 		var volume = Math.floor(nextX / state.maxX * 100);
-		console.log("drag", volume, nextX, state.maxX, deltaX)
 		setVolume(volume);
 	}
 
 	var sliderWidth = containerObj.clientWidth;
 	state.maxX = sliderWidth - 21;
 	state.slider = containerObj.querySelector('img');
-	state.currentX = state.slider.offsetLeft;
 
 	state.slider.addEventListener('mousedown', function (e) {
-		console.log(state)
 		state.cursorX = e.clientX;
 		state.originalX = state.currentX;
 		clearTimeout(state.disableTimer);
