@@ -17,6 +17,21 @@ body {
 	text-shadow: #111 0px -1px;
 }
 
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+::-webkit-scrollbar-track {
+	background: #021B2E;
+}
+::-webkit-scrollbar-thumb {
+	background: #053A66;
+	border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: #07569B;
+}
+
 h4 {
 	font-size: 13px;
 }
