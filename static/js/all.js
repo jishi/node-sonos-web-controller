@@ -7,7 +7,6 @@ var Sonos = {
 	},
 	grouping: {},
 	players: {},
-	positionInterval: null,
 	groupVolume: {
 		disableUpdate: false,
 		disableTimer: null
@@ -336,30 +335,7 @@ function updateCurrentStatus() {
 	}
 
 
-	clearInterval(Sonos.positionInterval);
-
-	if (selectedZone.state.zoneState == "PLAYING")
-		Sonos.positionInterval = setInterval(updatePosition, 500);
-
-	updatePosition();
-}
-
-function updatePosition() {
-	var elapsedMillis, elapsed;
-	var selectedZone = Sonos.currentZoneCoordinator();
-	if (selectedZone.state.zoneState == "PLAYING") {
-		var elapsedMillis = selectedZone.state.elapsedTime*1000 + (new Date().valueOf() - selectedZone.stateTime);
-		var elapsed = Math.floor(elapsedMillis/1000);
-	} else {
-		elapsed = selectedZone.state.elapsedTime;
-		elapsedMillis = elapsed * 1000;
-	}
-
-	document.getElementById("countup").textContent = toFormattedTime(elapsed);
-	var remaining = selectedZone.state.currentTrack.duration - elapsed;
-	document.getElementById("countdown").textContent = "-" + toFormattedTime(remaining);
-	var position = elapsedMillis / (selectedZone.state.currentTrack.duration*1000);
-	GUI.progress.setPosition(position);
+	GUI.progress.update(selectedZone);
 }
 
 function updateControllerState() {
@@ -562,12 +538,55 @@ function ProgressBar(containerObj, callback) {
 		currentX: 0,
 		slider: null,
 		progress: 0,
-		slideInProgress: false
+		slideInProgress: false,
+		elapsed: 0,
+		duration: 0,
+		lastUpdate: 0,
+		zoneState: "STOPPED",
+		hasBeenDragged: false
 	};
+
+	var progressAdjustTimer, tickerInterval;
 
 	// Update position
 	this.setPosition = function (position) {
 		if (state.slideInProgress) return;
+		setPosition(position);
+	}
+
+	this.update = function (selectedZone) {
+
+		state.elapsed = selectedZone.state.elapsedTime;
+		state.duration = selectedZone.state.currentTrack.duration;
+		state.lastUpdate = selectedZone.stateTime;
+		state.zoneState = selectedZone.state.zoneState;
+
+		clearInterval(tickerInterval);
+
+		console.log(state)
+
+		if (state.zoneState == "PLAYING")
+			tickerInterval = setInterval(updatePosition, 500);
+
+		updatePosition();
+	}
+
+	function updatePosition(force) {
+		if (state.slideInProgress && !force) return;
+		var elapsedMillis, realElapsed;
+
+		if (state.zoneState == "PLAYING") {
+			elapsedMillis = state.elapsed*1000 + (Date.now() - state.lastUpdate);
+			realElapsed = Math.floor(elapsedMillis/1000);
+		} else {
+			realElapsed = state.elapsed;
+			elapsedMillis = realElapsed * 1000;
+		}
+
+		document.getElementById("countup").textContent = toFormattedTime(realElapsed);
+		var remaining = state.duration - realElapsed;
+		document.getElementById("countdown").textContent = "-" + toFormattedTime(remaining);
+		var position = elapsedMillis / (state.duration*1000);
 		setPosition(position);
 	}
 
@@ -576,55 +595,52 @@ function ProgressBar(containerObj, callback) {
 		var offset = Math.round(state.maxX * position);
 		state.slider.style.marginLeft = offset + "px";
 		state.currentX = offset;
+		state.progress = position;
 	}
 
-	function handleVolumeWheel(e) {
-		console.log(e.deltaY)
-		// var newVolume;
-		// if(e.deltaY > 0) {
-		// 	// volume down
-		// 	newVolume = state.volume - 2;
-		// } else {
-		// 	// volume up
-		// 	newVolume = state.volume + 2;
-		// }
-		// if (newVolume < 0) newVolume = 0;
-		// if (newVolume > 100) newVolume = 100;
+	function handleMouseWheel(e) {
+		console.log(state)
+		var newProgress;
+		state.elapsed = state.elapsed + (Date.now() - state.lastUpdate)/1000;
+		state.lastUpdate = Date.now();
 
-		// setVolume( newVolume );
-		// clearTimeout(state.disableTimer);
-		// state.disableUpdate = true;
-		// state.disableTimer = setTimeout(function () {state.disableUpdate = false}, 800);
+		if(e.deltaY < 0) {
+			// wheel down
+			state.elapsed += 2;
+		} else {
+			// wheel up
+			state.elapsed -= 2;
+		}
 
-		//socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: newVolume});
-		//newVolume = Sonos.currentZoneCoordinator().groupState.volume = newVolume;
-
+		state.slideInProgress = true;
+		setPosition( state.elapsed / state.duration );
+		updatePosition(true);
+		console.log("clearing", progressAdjustTimer)
+		clearTimeout(progressAdjustTimer);
+		progressAdjustTimer = setTimeout(function () { callback(state.elapsed / state.duration); state.slideInProgress = false}, 800);
 
 	}
 
 	function handleClick(e) {
-		console.log(e)
-		// Be able to cancel this from a callback if necessary
-		// if (typeof clickCallback == "function" && clickCallback(this) == false) return;
+		if (e.target.tagName == "IMG") return;
 
-		// if (e.target.tagName == "IMG") return;
+		state.elapsed = state.elapsed + (Date.now() - state.lastUpdate)/1000;
+		state.lastUpdate = Date.now();
 
-		// var newVolume;
-		// if(e.layerX < state.currentX) {
-		// 	// volume down
-		// 	newVolume = state.volume - 2;
-		// } else {
-		// 	// volume up
-		// 	newVolume = state.volume + 2;
-		// }
+		if(e.layerX > state.currentX) {
+			// volume down
+			state.elapsed += 2;
+		} else {
+			// volume up
+			state.elapsed -= 2;
+		}
 
-		// if (newVolume < 0) newVolume = 0;
-		// if (newVolume > 100) newVolume = 100;
-
-		// setVolume(newVolume);
-		// clearTimeout(state.disableTimer);
-		// state.disableUpdate = true;
-		// state.disableTimer = setTimeout(function () {state.disableUpdate = false}, 800);
+		state.slideInProgress = true;
+		setPosition( state.elapsed / state.duration );
+		updatePosition(true);
+		console.log("clearing", progressAdjustTimer)
+		clearTimeout(progressAdjustTimer);
+		progressAdjustTimer = setTimeout(function () { callback(state.elapsed / state.duration); state.slideInProgress = false}, 2000);
 	}
 
 	function onDrag(e) {
@@ -635,7 +651,7 @@ function ProgressBar(containerObj, callback) {
 		if (nextX > state.maxX) nextX = state.maxX;
 		var progress = nextX / state.maxX;
 		setPosition(progress);
-
+		state.hasBeenDragged = true;
 	}
 
 
@@ -657,21 +673,22 @@ function ProgressBar(containerObj, callback) {
 	});
 
 	document.addEventListener('mouseup', function () {
-		if (!state.slideInProgress) return;
+		if (!state.slideInProgress || !state.hasBeenDragged ) return;
 		document.removeEventListener('mousemove', onDrag);
 		if (typeof callback == "function") {
 			callback(state.currentX / state.maxX);
 		}
 		state.slider.classList.remove('sliding');
 		state.slideInProgress = false;
+		state.hasBeenDragged = false;
 	});
 
 	// Since Chrome 31 wheel event is also supported
 	console.log(containerObj)
-	containerObj.addEventListener("wheel", handleVolumeWheel);
+	containerObj.addEventListener("wheel", handleMouseWheel);
 
 	// For click-to-adjust
-	//containerObj.addEventListener("click", handleClick);
+	containerObj.addEventListener("click", handleClick);
 }
 
 var zoneManagement = function() {
