@@ -20,7 +20,8 @@ Main target is to be able to run this on a raspberry pi, but any node.js compati
 * Chrome latest version (31 as of today)
 * Firefox latest version (25 as of today)
 
-For a screenshot of current progress, see: `http://upload.grabbarna.se/files/sonos-web-controller.png`
+For a screenshot of current progress, see: http://upload.grabbarna.se/files/sonos-web-controller.png
+For a video demo: http://www.youtube.com/watch?v=_7Dke5LsTF0
 
 Currently, prev, next, play/pause and the progress bar works. Group volume works as well, but not as expected (and doesn't update). Track info, player state and progress bar updates instantly when controlled from another device, which was one of the main goals with this project.
 
@@ -47,7 +48,9 @@ Create a folder on your computer where you want the files to reside (for example
 	npm install
 	node server.js
 
-Now, visit http://localhost:8080. For running this as a service under linux, I suggest using pm2 (https://github.com/Unitech/pm2). For windows you are on your own for now. It would be interesting to know if this would run under IIS using iisnode (https://github.com/tjanczuk/iisnode), but it might give you problems with socket.io if IIS will proxy all requests. If you have tested it, please let me know the result.
+Now, visit http://localhost:8080.
+
+For running this as a service under linux, I suggest using pm2 (https://github.com/Unitech/pm2). You must use fork mode (-x) otherwise it will use 100% CPU (cluster mode is the default, if you want to switch you need to delete the old app from pm2 with "pm2 delete appname"). For windows, you may try Winser (http://jfromaniello.github.io/winser/), but haven't tested it.
 
 
 
