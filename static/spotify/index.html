@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="/css/common.css" />
+		<link rel="stylesheet" type="text/css" href="css/spotify.css" />
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+		  var socket = io.connect('/');
+		</script>
+		<title id="page-title">Spotify / Sonos Controller</title>
+		<link id="favicon" rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+	</head>
+<body>
+	<header>
+		<input id="search-field" />
+	</header>
+	<div id="column-container">
+		<div id="sidebar"></div>
+		<div id="main"></div>
+	</div>
+	<footer id="control">
+		<div id="controls">
+			<img id="prev" src="/svg/prev.svg" />
+			<img id="play-pause" src="/svg/pause.svg" />
+			<img id="next" src="/svg/next.svg" />
+		</div>
+		<div id="master-volume" class="volume-bar" /><div class="scrubber"></div></div>
+		<div id="player-volumes-container">
+			<div id="player-volumes" class="loading"></div>
+		</div>
+		<div id="countup">0:00</div>
+		<div id="position-bar">
+			<div class="scrubber" id="position-bar-scrubber"></div>
+		</div>
+		<div id="countdown">-0:00</div>
+	</footer>
+	<!--script src="/js/all.js"></script-->
+</body>
+</html>
