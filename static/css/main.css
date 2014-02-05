@@ -1,20 +1,9 @@
-html {
-}
 body {
-	background: #515151;
 	background-image: linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 	background-image: -moz-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 	background-image: -webkit-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 	background-image: -ms-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
-	color: #fff;
-	font-family: Arial, sans-serif;
-	min-width: 800px;
 	margin: 5px 5px 0 5px;
-	overflow: hidden;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	height: 100vh;
-	text-shadow: #111 0px -1px;
 }
 
 ::-webkit-scrollbar {

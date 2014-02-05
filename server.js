@@ -36,7 +36,6 @@ fs.mkdir(settings.cacheDir, function (e) {
 
 
 var server = http.createServer(function (req, res) {
-
   if (/^\/getaa/.test(req.url)) {
     // this is a resource, download from player and put in cache folder
     var md5url = crypto.createHash('md5').update(req.url).digest('hex');
@@ -65,8 +64,10 @@ var server = http.createServer(function (req, res) {
       }, function (res2) {
         console.log(res2.statusCode);
         if (res2.statusCode == 200) {
-          var cacheStream = fs.createWriteStream(fileName);
-          res2.pipe(cacheStream);
+          if (!fs.exists(fileName)) {
+            var cacheStream = fs.createWriteStream(fileName);
+            res2.pipe(cacheStream);
+          } else { res2.resume(); }
         } else if (res2.statusCode == 404) {
           // no image exists! link it to the default image.
           console.log(res2.statusCode, 'linking', fileName)
@@ -251,7 +252,10 @@ discovery.on('queue-changed', function (data) {
 });
 
 function loadQueue(uuid, socket) {
+  console.time('loading-queue');
+  var maxRequestedCount = 600;
   function getQueue(startIndex, requestedCount) {
+    console.log('getqueue', startIndex, requestedCount)
     var player = discovery.getPlayerByUUID(uuid);
     player.getQueue(startIndex, requestedCount, function (success, queue) {
       if (!success) return;
@@ -264,19 +268,21 @@ function loadQueue(uuid, socket) {
       }
 
       if (queue.startIndex + queue.numberReturned < queue.totalMatches) {
-        getQueue(queue.startIndex + queue.numberReturned, 100);
+        getQueue(queue.startIndex + queue.numberReturned, maxRequestedCount);
+      } else {
+        console.timeEnd('loading-queue');
       }
     });
   }
 
   if (!queues[uuid]) {
-    getQueue(0, 100);
+    getQueue(0, maxRequestedCount);
   } else {
     var queue = queues[uuid];
     queue.numberReturned = queue.items.length;
     socket.emit('queue', {uuid: uuid, queue: queue});
     if (queue.totalMatches > queue.items.length) {
-      getQueue(queue.items.length, 100);
+      getQueue(queue.items.length, maxRequestedCount);
     }
   }
 }

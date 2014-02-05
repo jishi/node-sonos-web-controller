@@ -281,26 +281,25 @@ document.getElementById('player-volumes-container').addEventListener('click', fu
 
 });
 
+document.getElementById("current-track-art").addEventListener('load', function (e) {
+	// new image loaded. update favicon
+	// This prevents duplicate requests!
+	console.log('albumart loaded', this.src)
+	var oldFavicon = document.getElementById("favicon");
+	var newFavicon = oldFavicon.cloneNode();
+	newFavicon.href = this.src;
+	newFavicon.type = "image/png";
+	oldFavicon.parentNode.replaceChild(newFavicon, oldFavicon);
+
+});
+
 ///
 /// ACTIONS
 ///
 
 function updateCurrentStatus() {
 	var selectedZone = Sonos.currentZoneCoordinator();
-	console.log("updating current", selectedZone)
 	document.getElementById("current-track-art").src =  selectedZone.state.currentTrack.albumArtURI;
-	// update favicon
-	var oldFavicon = document.getElementById("favicon");
-	var newFavicon = oldFavicon.cloneNode();
-	if (selectedZone.state.currentTrack.albumArtURI) {
-		newFavicon.href = selectedZone.state.currentTrack.albumArtURI;
-		newFavicon.type = "image/png";
-	} else {
-		newFavicon.href = "favicon.ico";
-		newFavicon.type = "image/x-icon";
-	}
-	oldFavicon.parentNode.replaceChild(newFavicon, oldFavicon);
-
 	document.getElementById('page-title').textContent = selectedZone.state.currentTrack.title + ' - Sonos Web Controller';
 	document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
 	document.getElementById("artist").textContent = selectedZone.state.currentTrack.artist;
