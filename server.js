@@ -122,7 +122,7 @@ socketServer.sockets.on('connection', function (socket) {
     if (!player) return;
 
     // invoke action
-    console.log(data)
+    //console.log(data)
     player[data.state]();
   });
 
@@ -132,7 +132,7 @@ socketServer.sockets.on('connection', function (socket) {
     if (!player) return;
 
     // invoke action
-    console.log(data)
+    //console.log(data)
     player.groupSetVolume(data.volume);
   });
 
@@ -232,12 +232,10 @@ discovery.on('group-volume', function (data) {
 });
 
 discovery.on('group-mute', function (data) {
-  console.log(data)
   socketServer.sockets.emit('group-mute', data);
 });
 
 discovery.on('mute', function (data) {
-  console.log(data)
   socketServer.sockets.emit('mute', data);
 });
 

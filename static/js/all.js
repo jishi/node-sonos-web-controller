@@ -126,8 +126,8 @@ socket.on('group-mute', function (data) {
 
 socket.on('mute', function (data) {
 	var player = Sonos.players[data.uuid];
-	player.state.mute = data.state;
-	document.getElementById("mute-" + player.uuid).src = data.state ? 'svg/mute_on.svg' : 'svg/mute_off.svg';
+	player.state.mute = data.state.mute;
+	document.getElementById("mute-" + player.uuid).src = data.state.mute ? 'svg/mute_on.svg' : 'svg/mute_off.svg';
 });
 
 socket.on('favorites', function (data) {
