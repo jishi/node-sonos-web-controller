@@ -384,6 +384,7 @@ h4 {
 	border-top: 1px solid #101010;
 	border-bottom: 1px solid #606060;
 	vertical-align: middle;
+	position: relative;
 }
 
 #zone-wrapper ul {

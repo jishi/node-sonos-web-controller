@@ -1,119 +1,20 @@
 "use strict";
 
-var Sonos = {
-	currentState: {
-		selectedZone: null,
-		zoneInfo: null
-	},
-	grouping: {},
-	players: {},
-	groupVolume: {
-		disableUpdate: false,
-		disableTimer: null
-	},
-	currentZoneCoordinator: function () {
-		return Sonos.players[Sonos.currentState.selectedZone];
-	}
-};
-
-///
-/// GUI Init
-///
-
-var GUI = {
-	masterVolume: new VolumeSlider(document.getElementById('master-volume'), function (volume) {
-			socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: volume});
-		}, function (obj) {
-			// this logic controls show/hide of the individual volume controls
-			var playerVolumesNode = document.getElementById('player-volumes');
-			if (playerVolumesNode.classList.contains('hidden')) {
-				playerVolumesNode.classList.remove('hidden');
-				playerVolumesNode.classList.add('visible');
-				document.addEventListener('click', function hideVolume(e) {
-					// ignore the master volume
-					if (e.target == obj) return;
-					var playerVolumeContainer = document.getElementById('player-volumes');
-					function isChildOf(child) {
-						// ignore master volume elements
-						if (child == obj) return true;
-						// ignore player volume container
-						if (child == playerVolumeContainer) return true;
-						if (child == document) return false;
-						return isChildOf(child.parentNode);
-					}
-					// and the playerVolume
-					if (isChildOf(e.target)) return;
-
-					// This is a random click, hide it and remove the container
-					playerVolumesNode.classList.add('hidden');
-					playerVolumesNode.classList.remove('visible');
-					document.removeEventListener('click', hideVolume);
-
-				});
-				return false;
-			}
-			return true;
-		}),
-	playerVolumes: {},
-	progress: new ProgressBar(document.getElementById('position-bar'), function (position) {
-		// calculate new time
-		var player = Sonos.currentZoneCoordinator();
-		console.log(player.state)
-		var desiredElapsed = Math.round(player.state.currentTrack.duration * position);
-		player.state.elapsedTime = desiredElapsed;
-		socket.emit('track-seek', {uuid: player.uuid, elapsed: desiredElapsed});
-	})
-};
-
-///
-/// socket events
-///
-socket.on('topology-change', function (data) {
-	Sonos.grouping = {};
-	var stateTime = new Date().valueOf();
-	var shouldRenderVolumes = false;
-	data.forEach(function (player) {
-		player.stateTime = stateTime;
-		Sonos.players[player.uuid] = player;
-		if (!Sonos.grouping[player.coordinator]) Sonos.grouping[player.coordinator] = [];
-		Sonos.grouping[player.coordinator].push(player.uuid);
-	});
-
-	console.log("topology-change", Sonos.grouping, Sonos.players);
-
-	// If the selected group dissappeared, select a new one.
-	if (!Sonos.grouping[Sonos.currentState.selectedZone]) {
-		// just get first zone available
-		for (var uuid in Sonos.grouping) {
-			Sonos.currentState.selectedZone = uuid;
-			break;
-		}
-		// we need queue as well!
-		socket.emit('queue', {uuid:Sonos.currentState.selectedZone});
-		shouldRenderVolumes = true;
-	}
-
+Socket.topologyChanged = function (shouldRenderVolumes) {
 	if (shouldRenderVolumes) renderVolumes();
 
 	reRenderZones();
 	updateControllerState();
 	updateCurrentStatus();
-});
+}
 
-socket.on('transport-state', function (player) {
-	player.stateTime = new Date().valueOf();
-	Sonos.players[player.uuid] = player;
+Socket.transportStateChanged = function (player) {
 	reRenderZones();
-	var selectedZone = Sonos.currentZoneCoordinator();
-	console.log(selectedZone)
 	updateControllerState();
 	updateCurrentStatus();
+}
 
-});
-
-socket.on('group-volume', function (data) {
-
-	Sonos.players[data.uuid].groupState.volume = data.groupState.volume;
+Socket.groupVolumeChanged = function (data) {
 	if (data.uuid == Sonos.currentState.selectedZone) {
 		GUI.masterVolume.setVolume(data.groupState.volume);
 	}
@@ -121,181 +22,24 @@ socket.on('group-volume', function (data) {
 		Sonos.players[data.uuid].state.volume = data.playerVolumes[uuid];
 		GUI.playerVolumes[uuid].setVolume(data.playerVolumes[uuid]);
 	}
-});
+}
 
-socket.on('group-mute', function (data) {
-	Sonos.players[data.uuid].groupState = data.state;
+Socket.groupMuteChanged = function (data) {
 	updateControllerState();
-});
+}
 
-socket.on('mute', function (data) {
-	var player = Sonos.players[data.uuid];
-	player.state.mute = data.state.mute;
-	document.getElementById("mute-" + player.uuid).src = data.state.mute ? 'svg/mute_on.svg' : 'svg/mute_off.svg';
-});
+Socket.muteChanged = function (data) {
+	document.getElementById("mute-" + data.uuid).src = data.state.mute ? 'svg/mute_on.svg' : 'svg/mute_off.svg';
+}
 
-socket.on('favorites', function (data) {
+Socket.favoritesChanged = function (data) {
 	renderFavorites(data);
-});
+}
 
-socket.on('queue', function (data) {
-	console.log("received queue", data.uuid);
+Socket.queueChanged = function (data) {
 	if (data.uuid != Sonos.currentState.selectedZone) return;
 	renderQueue(data.queue);
-});
-
-///
-/// GUI events
-///
-
-document.getElementById('zone-container').addEventListener('click', function (e) {
-	// Find the actual UL
-	function findZoneNode(currentNode) {
-		// If we are at top level, abort.
-		if (currentNode == this) return;
-		if (currentNode.tagName == "UL") return currentNode;
-		return findZoneNode(currentNode.parentNode);
-	}
-
-	var zone = findZoneNode(e.target);
-
-	if (!zone) return;
-
-	var previousZone = document.getElementById(Sonos.currentState.selectedZone);
-	if (previousZone) previousZone.classList.remove('selected');
-
-	Sonos.currentState.selectedZone = zone.id;
-	zone.classList.add('selected');
-	// Update controls with status
-	updateControllerState();
-	updateCurrentStatus();
-
-	// fetch queue
-	socket.emit('queue', {uuid: Sonos.currentState.selectedZone});
-
-}, true);
-
-document.getElementById('master-mute').addEventListener('click', function () {
-
-	var action;
-	// Find state of current player
-	var player = Sonos.currentZoneCoordinator();
-
-	// current state
-	var mute = player.groupState.mute;
-	socket.emit('group-mute', {uuid: player.uuid, mute: !mute});
-
-	// update
-	if (mute)
-		this.src = this.src.replace(/_on\.svg/, '_off.svg');
-	else
-		this.src = this.src.replace(/_off\.svg/, '_on.svg');
-
-});
-
-document.getElementById('play-pause').addEventListener('click', function () {
-
-	var action;
-	// Find state of current player
-	var player = Sonos.currentZoneCoordinator();
-	if (player.state.zoneState == "PLAYING" ) {
-		action = 'pause';
-	} else {
-		action = 'play';
-	}
-
-	console.log(action, Sonos.currentState)
-	socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
-});
-
-document.getElementById('next').addEventListener('click', function () {
-	var action = "nextTrack";
-	console.log(action, Sonos.currentState)
-	socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
-});
-document.getElementById('prev').addEventListener('click', function () {
-	var action = "previousTrack";
-	console.log(action, Sonos.currentState)
-	socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
-});
-
-document.getElementById('music-sources-container').addEventListener('dblclick', function (e) {
-	function findFavoriteNode(currentNode) {
-		// If we are at top level, abort.
-		if (currentNode == this) return;
-		if (currentNode.tagName == "LI") return currentNode;
-		return findFavoriteNode(currentNode.parentNode);
-	}
-	var li = findFavoriteNode(e.target);
-	socket.emit('play-favorite', {uuid: Sonos.currentState.selectedZone, favorite: li.dataset.title});
-});
-
-document.getElementById('status-container').addEventListener('dblclick', function (e) {
-	function findQueueNode(currentNode) {
-		// If we are at top level, abort.
-		if (currentNode == this) return;
-		if (currentNode.tagName == "LI") return currentNode;
-		return findQueueNode(currentNode.parentNode);
-	}
-	var li = findQueueNode(e.target);
-	if (!li) return;
-	socket.emit('seek', {uuid: Sonos.currentState.selectedZone, trackNo: li.dataset.trackNo});
-});
-
-document.getElementById('position-info').addEventListener('click', function (e) {
-	function findActionNode(currentNode) {
-		if (currentNode == this) return;
-		if (currentNode.className == "playback-mode") return currentNode;
-		return findActionNode(currentNode.parentNode);
-	}
-
-	var actionNode = findActionNode(e.target);
-	if (!actionNode) return;
-
-	var action = actionNode.id;
-	var data = {};
-	var state = /off/.test(actionNode.src) ? true : false;
-	data[action] = state;
-
-	var selectedZone = Sonos.currentZoneCoordinator();
-	// set this directly for instant feedback
-	selectedZone.playMode[action] = state;
-	updateCurrentStatus();
-	socket.emit('playmode', {uuid: Sonos.currentState.selectedZone, state: data});
-
-});
-
-document.getElementById('player-volumes-container').addEventListener('click', function (e) {
-	var muteButton = e.target;
-	if (!muteButton.classList.contains('mute-button')) return;
-
-
-
-	// this is a mute button, go.
-	var player = Sonos.players[muteButton.dataset.id];
-	var state = !player.state.mute;
-	socket.emit('mute', {uuid: player.uuid, mute: state});
-
-	// update GUI
-		// update
-	if (state)
-		muteButton.src = muteButton.src.replace(/_off\.svg/, '_on.svg');
-	else
-		muteButton.src = muteButton.src.replace(/_on\.svg/, '_off.svg');
-
-});
-
-document.getElementById("current-track-art").addEventListener('load', function (e) {
-	// new image loaded. update favicon
-	// This prevents duplicate requests!
-	console.log('albumart loaded', this.src)
-	var oldFavicon = document.getElementById("favicon");
-	var newFavicon = oldFavicon.cloneNode();
-	newFavicon.href = this.src;
-	newFavicon.type = "image/png";
-	oldFavicon.parentNode.replaceChild(newFavicon, oldFavicon);
-
-});
+}
 
 ///
 /// ACTIONS
@@ -411,288 +155,9 @@ function zpad(number, width) {
 	return padding + str;
 }
 
-function VolumeSlider(containerObj, callback, clickCallback) {
-	var state = {
-		cursorX: 0,
-		originalX: 0,
-		maxX: 0,
-		currentX: 0,
-		slider: null,
-		volume: 0,
-		disableUpdate: false,
-		disableTimer: null
-	};
-
-	function setVolume(volume) {
-		// calculate a pixel offset based on percentage
-		if (state.volume == volume) return;
-		setScrubberPosition(volume);
-		if (typeof callback == "function")
-			callback(volume);
-	}
-
-	function setScrubberPosition(volume) {
-		var offset = Math.round(state.maxX * volume / 100);
-		state.currentX = offset;
-		state.slider.style.marginLeft = offset + 'px';
-		state.volume = volume;
-	}
-
-	function handleVolumeWheel(e) {
-		var newVolume;
-		if(e.deltaY > 0) {
-			// volume down
-			newVolume = state.volume - 2;
-		} else {
-			// volume up
-			newVolume = state.volume + 2;
-		}
-		if (newVolume < 0) newVolume = 0;
-		if (newVolume > 100) newVolume = 100;
-
-		setVolume( newVolume );
-		clearTimeout(state.disableTimer);
-		state.disableUpdate = true;
-		state.disableTimer = setTimeout(function () {state.disableUpdate = false}, 800);
-
-		//socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: newVolume});
-		//newVolume = Sonos.currentZoneCoordinator().groupState.volume = newVolume;
-
-
-	}
-
-	function handleClick(e) {
-		// Be able to cancel this from a callback if necessary
-		if (typeof clickCallback == "function" && clickCallback(this) == false) return;
-
-		if (e.target.tagName == "IMG") return;
-
-		var newVolume;
-		if(e.layerX < state.currentX) {
-			// volume down
-			newVolume = state.volume - 2;
-		} else {
-			// volume up
-			newVolume = state.volume + 2;
-		}
-
-		if (newVolume < 0) newVolume = 0;
-		if (newVolume > 100) newVolume = 100;
-
-		setVolume(newVolume);
-		clearTimeout(state.disableTimer);
-		state.disableUpdate = true;
-		state.disableTimer = setTimeout(function () {state.disableUpdate = false}, 800);
-	}
-
-	function onDrag(e) {
-		var deltaX = e.clientX - state.cursorX;
-		var nextX = state.originalX + deltaX;
-
-		if ( nextX > state.maxX ) nextX = state.maxX;
-		else if ( nextX < 1) nextX = 1;
-
-		// calculate percentage
-		var volume = Math.floor(nextX / state.maxX * 100);
-		setVolume(volume);
-	}
-
-	var sliderWidth = containerObj.clientWidth;
-	state.maxX = sliderWidth - 21;
-	state.slider = containerObj.querySelector('img');
-
-	state.slider.addEventListener('mousedown', function (e) {
-		state.cursorX = e.clientX;
-		state.originalX = state.currentX;
-		clearTimeout(state.disableTimer);
-		state.disableUpdate = true;
-		document.addEventListener('mousemove', onDrag);
-		e.preventDefault();
-	});
-
-	document.addEventListener('mouseup', function () {
-		document.removeEventListener('mousemove', onDrag);
-		state.currentX = state.slider.offsetLeft;
-		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 800);
-	});
-
-	// Since Chrome 31 wheel event is also supported
-	containerObj.addEventListener("wheel", handleVolumeWheel);
-
-	// For click-to-adjust
-	containerObj.addEventListener("click", handleClick);
 
 
 
-	// Add some functions to go
-	this.setVolume = function (volume) {
-		if (state.disableUpdate) return;
-		setScrubberPosition(volume);
-	}
-
-	return this;
-}
-
-function ProgressBar(containerObj, callback) {
-	var state = {
-		cursorX: 0,
-		originalX: 0,
-		maxX: 0,
-		currentX: 0,
-		slider: null,
-		progress: 0,
-		slideInProgress: false,
-		elapsed: 0,
-		duration: 0,
-		lastUpdate: 0,
-		zoneState: "STOPPED",
-		hasBeenDragged: false
-	};
-
-	var progressAdjustTimer, tickerInterval;
-
-	// Update position
-	this.setPosition = function (position) {
-		if (state.slideInProgress) return;
-		setPosition(position);
-	}
-
-	this.update = function (selectedZone) {
-
-		state.elapsed = selectedZone.state.elapsedTime;
-		state.duration = selectedZone.state.currentTrack.duration;
-		state.lastUpdate = selectedZone.stateTime;
-		state.zoneState = selectedZone.state.zoneState;
-
-		clearInterval(tickerInterval);
-
-		console.log(state)
-
-		if (state.zoneState == "PLAYING")
-			tickerInterval = setInterval(updatePosition, 500);
-
-		updatePosition();
-	}
-
-	function updatePosition(force) {
-		if (state.slideInProgress && !force) return;
-		var elapsedMillis, realElapsed;
-
-		if (state.zoneState == "PLAYING") {
-			elapsedMillis = state.elapsed*1000 + (Date.now() - state.lastUpdate);
-			realElapsed = Math.floor(elapsedMillis/1000);
-		} else {
-			realElapsed = state.elapsed;
-			elapsedMillis = realElapsed * 1000;
-		}
-
-		document.getElementById("countup").textContent = toFormattedTime(realElapsed);
-		var remaining = state.duration - realElapsed;
-		document.getElementById("countdown").textContent = "-" + toFormattedTime(remaining);
-		var position = elapsedMillis / (state.duration*1000);
-		setPosition(position);
-	}
-
-	function setPosition(position) {
-		// calculate offset
-		var offset = Math.round(state.maxX * position);
-		state.slider.style.marginLeft = offset + "px";
-		state.currentX = offset;
-		state.progress = position;
-	}
-
-	function handleMouseWheel(e) {
-		console.log(state)
-		var newProgress;
-		state.elapsed = state.elapsed + (Date.now() - state.lastUpdate)/1000;
-		state.lastUpdate = Date.now();
-
-		if(e.deltaY < 0) {
-			// wheel down
-			state.elapsed += 2;
-		} else {
-			// wheel up
-			state.elapsed -= 2;
-		}
-
-		state.slideInProgress = true;
-		setPosition( state.elapsed / state.duration );
-		updatePosition(true);
-		console.log("clearing", progressAdjustTimer)
-		clearTimeout(progressAdjustTimer);
-		progressAdjustTimer = setTimeout(function () { callback(state.elapsed / state.duration); state.slideInProgress = false}, 800);
-
-	}
-
-	function handleClick(e) {
-		if (e.target.tagName == "IMG") return;
-
-		state.elapsed = state.elapsed + (Date.now() - state.lastUpdate)/1000;
-		state.lastUpdate = Date.now();
-
-		if(e.layerX > state.currentX) {
-			// volume down
-			state.elapsed += 2;
-		} else {
-			// volume up
-			state.elapsed -= 2;
-		}
-
-		state.slideInProgress = true;
-		setPosition( state.elapsed / state.duration );
-		updatePosition(true);
-		console.log("clearing", progressAdjustTimer)
-		clearTimeout(progressAdjustTimer);
-		progressAdjustTimer = setTimeout(function () { callback(state.elapsed / state.duration); state.slideInProgress = false}, 2000);
-	}
-
-	function onDrag(e) {
-		var deltaX = e.clientX - state.cursorX;
-		var nextX = state.originalX + deltaX;
-		// calculate time
-		if (nextX < 1) nextX = 1;
-		if (nextX > state.maxX) nextX = state.maxX;
-		var progress = nextX / state.maxX;
-		setPosition(progress);
-		state.hasBeenDragged = true;
-	}
-
-
-	var sliderWidth = containerObj.clientWidth;
-	state.maxX = sliderWidth - 5;
-	state.slider = containerObj.querySelector('div');
-	state.currentX = state.slider.offsetLeft;
-
-	console.log(state)
-
-	state.slider.addEventListener('mousedown', function (e) {
-		state.slideInProgress = true;
-		state.cursorX = e.clientX;
-		state.originalX = state.currentX;
-		console.log(e, state)
-		state.slider.classList.add('sliding');
-		document.addEventListener('mousemove', onDrag);
-		e.preventDefault();
-	});
-
-	document.addEventListener('mouseup', function () {
-		if (!state.slideInProgress || !state.hasBeenDragged ) return;
-		document.removeEventListener('mousemove', onDrag);
-		if (typeof callback == "function") {
-			callback(state.currentX / state.maxX);
-		}
-		state.slider.classList.remove('sliding');
-		state.slideInProgress = false;
-		state.hasBeenDragged = false;
-	});
-
-	// Since Chrome 31 wheel event is also supported
-	console.log(containerObj)
-	containerObj.addEventListener("wheel", handleMouseWheel);
-
-	// For click-to-adjust
-	containerObj.addEventListener("click", handleClick);
-}
 
 var zoneManagement = function() {
 
@@ -720,7 +185,7 @@ var zoneManagement = function() {
 		if (e.target == this) {
 			// detach
 			console.log("detach");
-			socket.emit('group-management', {player: dragItem.dataset.id, group: null});
+			Socket.socket.emit('group-management', {player: dragItem.dataset.id, group: null});
 			return;
 		}
 
@@ -728,7 +193,7 @@ var zoneManagement = function() {
 		if (!zone || zone == this.parentNode) return;
 
 		console.log(dragItem.dataset.id, zone.id);
-		socket.emit('group-management', {player: dragItem.dataset.id, group: zone.id});
+		Socket.socket.emit('group-management', {player: dragItem.dataset.id, group: zone.id});
 
 	}
 
@@ -781,7 +246,7 @@ function renderVolumes() {
 		var uuid = playerPair.uuid;
 		var node = playerPair.node;
 		GUI.playerVolumes[uuid] = new VolumeSlider(node, function (vol) {
-			socket.emit('volume', {uuid: uuid, volume: vol});
+			Socket.socket.emit('volume', {uuid: uuid, volume: vol});
 		});
 
 		console.log(uuid, Sonos.players[uuid].state.volume);
