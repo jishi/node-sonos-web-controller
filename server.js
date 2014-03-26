@@ -2,6 +2,7 @@ var http = require('http');
 var static = require('node-static');
 var io = require('socket.io');
 var fs = require('fs');
+var path = require('path');
 var crypto = require('crypto');
 var SonosDiscovery = require('sonos-discovery');
 var discovery = new SonosDiscovery();
@@ -11,7 +12,7 @@ var settings = {
 }
 
 try {
-  var userSettings = require('./settings.json');
+  var userSettings = require(path.resolve(__dirname, 'settings.json'));
 } catch (e) {
   console.log('no settings file found, will only use default settings');
 }
@@ -22,13 +23,16 @@ if (userSettings) {
   }
 }
 
-var fileServer = new static.Server('./static');
+var cacheDir = path.resolve(__dirname, settings.cacheDir);
+var missingAlbumArt = path.resolve(__dirname, './lib/browse_missing_album_art.png');
+
+var fileServer = new static.Server(path.resolve(__dirname, 'static'));
 
 var playerIps = [];
 var playerCycle = 0;
 var queues = {};
 
-fs.mkdir(settings.cacheDir, function (e) {
+fs.mkdir(cacheDir, function (e) {
   if (e && e.code != 'EEXIST')
     console.log('creating cache dir failed!', e);
 });
@@ -39,7 +43,7 @@ var server = http.createServer(function (req, res) {
   if (/^\/getaa/.test(req.url)) {
     // this is a resource, download from player and put in cache folder
     var md5url = crypto.createHash('md5').update(req.url).digest('hex');
-    var fileName = settings.cacheDir + '/' + md5url;
+    var fileName = path.join(cacheDir, md5url);
 
     if (playerIps.length == 0) {
       for (var i in discovery.players) {
@@ -47,7 +51,7 @@ var server = http.createServer(function (req, res) {
       }
     }
 
-    fs.exists = fs.exists || require('path').exists;
+    fs.exists = fs.exists || path.exists;
     fs.exists(fileName, function (exists) {
       if (exists) {
         var readCache = fs.createReadStream(fileName);
@@ -71,7 +75,7 @@ var server = http.createServer(function (req, res) {
         } else if (res2.statusCode == 404) {
           // no image exists! link it to the default image.
           console.log(res2.statusCode, 'linking', fileName)
-          fs.link('./lib/browse_missing_album_art.png', fileName, function (e) {
+          fs.link(missingAlbumArt, fileName, function (e) {
             res2.resume();
             if (e) console.log(e);
           });
