@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+		</script>
+		<title id="page-title">Sonos Web Controller</title>
+		<link id="favicon" rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<meta name="mobile-web-app-capable" content="yes">
+		<meta name="viewport" content="width=device-width">
+	</head>
+<body>
+	<div id="zone-container">
+		<h4>ROOMS</h4>
+		<div id="zone-wrapper"></div>
+	</div>
+
+	<div id="music-sources-container">
+		<h4>FAVORITES</h4>
+		<ul id="favorites-container"></ul>
+	</div>
+
+	<div id="status-container">
+		<img id="current-track-art" />
+		<div id="current-track-info">
+
+			<div>
+				<p id="track"></p>
+				<p id="artist"></p>
+				<p id="album"></p>
+			</div>
+			<p class="next-track">Next: <span id="next-track"></span></p>
+			<footer id="control">
+			<div id="controls">
+				<img id="prev" src="/svg/prev.svg" />
+				<img id="play-pause" src="/svg/pause.svg" />
+				<img id="next" src="/svg/next.svg" />
+			</div>
+			<div id="master-volume" class="volume-bar" />
+				<div class="background"></div>
+				<div class="scrubber"></div>
+			</div>
+			<div id="player-volumes-container">
+				<div id="player-volumes" class="loading"></div>
+			</div>
+		</footer>
+		</div>
+
+
+	</div>
+
+
+	<script src="/js/socket.js"></script>
+	<script src="/js/sonos.js"></script>
+	<script src="js/socket-events.js"></script>
+	<script src="js/gui.js"></script>
+	<script src="js/gui-events.js"></script>
+</body>
+</html>
