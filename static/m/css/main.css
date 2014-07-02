@@ -1,3 +1,6 @@
+@import url('landscape.css') (orientation:landscape);
+@import url('portrait.css') (orientation:portrait);
+
 html {
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
@@ -8,10 +11,9 @@ body {
 	-moz-box-sizing: border-box;
 	margin: 0;
 	padding: 8px;
-	font-family: Arial, sans-serif;
-	font-size: 5vw;
 	-moz-user-select: none;
 	-webkit-user-select: none;
+	font-family: 'Nunito', sans-serif;
 
 }
 
@@ -20,15 +22,7 @@ body {
 	display: none;
 }
 
-#current-track-info {
-	width: calc(100% - 8px);
-	position: absolute;
-	bottom: 0;
-	padding-top: 1vh;
-	background-image: linear-gradient(top, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
-	background-image: -moz-linear-gradient(top, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
-	background-image: -webkit-linear-gradient(top, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
-}
+
 
 #current-track-info p {
 	margin: 0.5vw;
@@ -43,23 +37,14 @@ body {
 	color: #ccc;
 }
 
-#current-track-info .next-track {
-	font-size: 4vw;
-}
 
-#current-track-art {
-	width: 100%;
-}
 
 #controls {
 	text-align: center;
 }
 
 #controls img {
-	width: 17vw;
-	height: 17vw;
 	transition: background 0.05s;
-	border-radius: 8.5vw;
 }
 
 #controls img:active {

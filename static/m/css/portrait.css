@@ -1,0 +1,28 @@
+body {
+	font-size: 5vw;
+}
+
+#current-track-info {
+	width: calc(100% - 8px);
+	position: absolute;
+	bottom: 0;
+	padding-top: 1vh;
+	background-image: linear-gradient(top, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
+	background-image: -moz-linear-gradient(top, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
+	background-image: -webkit-linear-gradient(top, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
+}
+
+#current-track-info .next-track {
+	font-size: 4vw;
+}
+
+#current-track-art {
+	width: 100%;
+}
+
+#controls img {
+	width: 17vw;
+	height: 17vw;
+	border-radius: 8.5vw;
+}
+
