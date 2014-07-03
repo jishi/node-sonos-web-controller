@@ -44,11 +44,12 @@ body {
 }
 
 #controls img {
-	transition: background 0.05s;
+	transition: background 0.2s ease-out;
 }
 
 #controls img:active {
 	background: #aaa;
+	transition: background 0s;
 }
 
 #master-volume {
