@@ -4,13 +4,15 @@ body {
 
 #current-track-info {
 	width: calc(50% - 4px);
+	height: calc(100% - 16px);
 	position: absolute;
 	right: 0;
-	bottom: 0;
-	padding-top: 1vh;
-	background-image: linear-gradient(top, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
-	background-image: -moz-linear-gradient(top, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
-	background-image: -webkit-linear-gradient(top, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
+	padding: 1vh;
+	padding-left: 5vh;
+	vertical-align: bottom;
+	background-image: linear-gradient(left, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
+	background-image: -moz-linear-gradient(left, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
+	background-image: -webkit-linear-gradient(left, rgba(0,0,0,0) 0, rgba(0, 0, 0, 0.87) 5vh);
 }
 
 #current-track-info .next-track {
@@ -18,13 +20,29 @@ body {
 }
 
 #current-track-art {
-	width: calc(50% - 4px);
+	height: calc(100vh - 16px);
 	float: left;
 }
 
+#controls {
+	width: calc(100% - 16px);
+	position: absolute;
+	bottom: 0;
+}
+
 #controls img {
-	width: 6vw;
-	height: 6vw;
+	width: 8vw;
+	height: 8vw;
 	transition: background 0.05s;
-	border-radius: 8.5vw;
+	border-radius: 4vw;
+}
+
+#master-volume .scrubber {
+	width: 3vw;
+	height: 3vw;
+	border-radius: 3vw;
+	background: #fff;
+}
+#master-volume .background {
+	top: 1.5vw;
 }

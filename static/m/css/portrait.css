@@ -26,3 +26,13 @@ body {
 	border-radius: 8.5vw;
 }
 
+#master-volume .scrubber {
+	width: 6vw;
+	height: 6vw;
+	border-radius: 3vw;
+	background: #fff;
+}
+#master-volume .background {
+	top: 3vw;
+}
+

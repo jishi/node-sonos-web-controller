@@ -137,6 +137,7 @@ socketServer.sockets.on('connection', function (socket) {
 
     // invoke action
     //console.log(data)
+    console.log(data.volume)
     player.groupSetVolume(data.volume);
   });
 

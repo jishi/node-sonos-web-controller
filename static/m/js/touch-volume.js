@@ -5,8 +5,10 @@ function TouchVolumeSlider(containerObj, callback) {
 		maxX: 0,
 		currentX: 0,
 		slider: null,
+		tooltip: null,
 		volume: 0,
 		disableUpdate: false,
+		numberOfTouches: 0,
 		disableTimer: null
 	};
 
@@ -22,6 +24,8 @@ function TouchVolumeSlider(containerObj, callback) {
 		var offset = Math.round(state.maxX * volume / 100);
 		state.currentX = offset;
 		state.slider.style.marginLeft = offset + 'px';
+		state.tooltip.style.marginLeft = offset + 'px';
+		state.tooltip.textContent = volume;
 		state.volume = volume;
 	}
 
@@ -88,25 +92,31 @@ function TouchVolumeSlider(containerObj, callback) {
 	var sliderWidth = containerObj.clientWidth;
 	state.maxX = sliderWidth - 21;
 	state.slider = containerObj.querySelector('.scrubber');
+	state.tooltip = containerObj.querySelector('.tooltip');
 
 	containerObj.addEventListener('touchstart', function (multi) {
+		state.numberOfTouches++;
 		var e = multi.touches[0];
 		state.cursorX = e.clientX;
 		state.originalX = state.currentX;
 		clearTimeout(state.disableTimer);
 		state.disableUpdate = true;
+		state.tooltip.classList.add("show");
 		document.addEventListener('touchmove', onDrag);
 		multi.preventDefault();
 	});
 
 	document.addEventListener('touchend', function () {
+		state.numberOfTouches--;
+		if (state.numberOfTouches > 0) return;
+		state.tooltip.classList.remove("show");
 		document.removeEventListener('touchmove', onDrag);
 		state.currentX = state.slider.offsetLeft;
 		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 800);
 	});
 
 	// Since Chrome 31 wheel event is also supported
-	containerObj.addEventListener("wheel", handleVolumeWheel);
+	//containerObj.addEventListener("wheel", handleVolumeWheel);
 
 	// For click-to-adjust
 	//containerObj.addEventListener("click", handleClick);
