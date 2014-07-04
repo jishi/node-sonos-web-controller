@@ -24,3 +24,6 @@ document.getElementById('prev').addEventListener('click', function () {
 	Socket.socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 
+
+
+
