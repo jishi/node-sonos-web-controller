@@ -3,6 +3,7 @@ var GUI = {
 	masterVolume: new TouchVolumeSlider(document.getElementById('master-volume'), function (volume) {
 		Socket.socket.emit('group-volume', {uuid: Sonos.currentState.selectedZone, volume: volume});
 	}),
+	playerVolumes: {},
 	updateCurrentStatus: function () {
 		var selectedZone = Sonos.currentZoneCoordinator();
 
@@ -68,6 +69,50 @@ var GUI = {
 
 
 		// GUI.progress.update(selectedZone);
+	},
+	renderVolumes: function () {
+		var oldWrapper = document.getElementById('player-volumes');
+		var newWrapper = oldWrapper.cloneNode(false);
+		var masterVolume = document.getElementById('master-volume');
+		//var masterMute = document.getElementById('master-mute');
+
+		var playerNodes = [];
+
+		for (var i in Sonos.players) {
+			var player = Sonos.players[i];
+			var playerVolumeBar = masterVolume.cloneNode(true);
+			var playerVolumeBarContainer = document.createElement('div');
+			playerVolumeBarContainer.id = "volume-" + player.uuid;
+			playerVolumeBar.id = "";
+			playerVolumeBar.dataset.uuid = player.uuid;
+			var playerName = document.createElement('h6');
+			//var playerMute = masterMute.cloneNode(true);
+			//playerMute.id = "mute-" + player.uuid;
+			//playerMute.className = "mute-button";
+			//playerMute.src = player.state.mute ? "/svg/mute_on.svg" : "/svg/mute_off.svg";
+			//playerMute.dataset.id = player.uuid;
+			playerName.textContent = player.roomName;
+			playerVolumeBarContainer.appendChild(playerName);
+			//playerVolumeBarContainer.appendChild(playerMute);
+			playerVolumeBarContainer.appendChild(playerVolumeBar);
+			newWrapper.appendChild(playerVolumeBarContainer);
+			playerNodes.push({uuid: player.uuid, node: playerVolumeBar});
+		}
+
+		oldWrapper.parentNode.replaceChild(newWrapper, oldWrapper);
+
+		// They need to be part of DOM before initialization
+		playerNodes.forEach(function (playerPair) {
+			var uuid = playerPair.uuid;
+			var node = playerPair.node;
+			GUI.playerVolumes[uuid] = new TouchVolumeSlider(node, function (vol) {
+				Socket.socket.emit('volume', {uuid: uuid, volume: vol});
+			});
+
+			console.log(uuid, Sonos.players[uuid].state.volume);
+
+			GUI.playerVolumes[uuid].setVolume(Sonos.players[uuid].state.volume);
+		});
 	}
 };
 

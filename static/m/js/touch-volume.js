@@ -21,11 +21,18 @@ function TouchVolumeSlider(containerObj, callback) {
 	}
 
 	function setScrubberPosition(volume) {
-		var offset = Math.round(state.maxX * volume / 100);
+		var offset = Math.round(state.maxX * volume * 0.01);
 		state.currentX = offset;
-		state.slider.style.marginLeft = offset + 'px';
-		state.tooltip.style.marginLeft = offset + 'px';
+		//state.slider.style.marginLeft = offset + 'px';
+		state.slider.style.transform = 'translateX(' + offset + 'px)';
+		// For chrome 35 or less
+		state.slider.style.webkitTransform = 'translateX(' + offset + 'px)';
 		state.tooltip.textContent = volume;
+		// calculate tooltip offset
+		var adjustedOffset = offset + (state.slider.clientWidth - state.tooltip.clientWidth) * 0.5;
+		state.tooltip.style.transform = 'translateX(' + adjustedOffset + 'px)';
+		// For chrome 35 or less
+		state.tooltip.style.webkitTransform = 'translateX(' + adjustedOffset + 'px)';
 		state.volume = volume;
 	}
 
@@ -87,7 +94,9 @@ function TouchVolumeSlider(containerObj, callback) {
 		// calculate percentage
 		var volume = Math.floor(nextX / state.maxX * 100);
 		setVolume(volume);
+		multi.preventDefault();
 	}
+
 
 	var sliderWidth = containerObj.clientWidth;
 	state.maxX = sliderWidth - 21;
@@ -101,17 +110,16 @@ function TouchVolumeSlider(containerObj, callback) {
 		state.originalX = state.currentX;
 		clearTimeout(state.disableTimer);
 		state.disableUpdate = true;
-		state.tooltip.classList.add("show");
+		state.tooltip.classList.remove("hide");
 		document.addEventListener('touchmove', onDrag);
-		multi.preventDefault();
+		//multi.preventDefault();
 	});
 
 	document.addEventListener('touchend', function () {
 		state.numberOfTouches--;
 		if (state.numberOfTouches > 0) return;
-		state.tooltip.classList.remove("show");
+		state.tooltip.classList.add("hide");
 		document.removeEventListener('touchmove', onDrag);
-		state.currentX = state.slider.offsetLeft;
 		state.disableTimer = setTimeout(function () { state.disableUpdate = false }, 800);
 	});
 
@@ -126,7 +134,13 @@ function TouchVolumeSlider(containerObj, callback) {
 	// Add some functions to go
 	this.setVolume = function (volume) {
 		if (state.disableUpdate) return;
+
+		// To make a successful adjust of the tooltip, we need to show it temporarily.
+		state.tooltip.classList.remove("hide");
 		setScrubberPosition(volume);
+		state.tooltip.classList.add("hide");
+
+
 	}
 
 	return this;

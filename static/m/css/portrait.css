@@ -26,13 +26,19 @@ body {
 	border-radius: 8.5vw;
 }
 
-#master-volume .scrubber {
-	width: 6vw;
-	height: 6vw;
-	border-radius: 3vw;
+#master-volume .scrubber,
+.volume-bar .scrubber {
+	width: 4vw;
+	height: 4vw;
+	border-radius: 2vw;
 	background: #fff;
 }
-#master-volume .background {
-	top: 3vw;
+#master-volume .background,
+.volume-bar .background {
+	top: 2vw;
+}
+
+#player-volumes h6 {
+	margin: 1.5vh 0 -2vh 0;
 }
 

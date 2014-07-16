@@ -24,6 +24,14 @@ document.getElementById('prev').addEventListener('click', function () {
 	Socket.socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 
+document.getElementById('master-volume').addEventListener('click', function (e) {
+	var playerContainer = document.getElementById("player-volumes-container");
+	if (playerContainer.classList.contains('show')) {
+		playerContainer.classList.remove("show");
+	} else {
+		playerContainer.classList.add("show");
+	}
 
+});
 
 

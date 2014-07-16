@@ -4,6 +4,7 @@
 ///
 Socket.topologyChanged = function () {
 	GUI.updateCurrentStatus();
+	GUI.renderVolumes();
 }
 
 Socket.transportStateChanged = function (player) {
