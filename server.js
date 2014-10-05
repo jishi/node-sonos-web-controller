@@ -5,7 +5,6 @@ var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
 var SonosDiscovery = require('sonos-discovery');
-var discovery = new SonosDiscovery();
 var settings = {
   port: 8080,
   cacheDir: './cache'
@@ -22,6 +21,8 @@ if (userSettings) {
     settings[i] = userSettings[i];
   }
 }
+
+var discovery = new SonosDiscovery(settings);
 
 var cacheDir = path.resolve(__dirname, settings.cacheDir);
 var missingAlbumArt = path.resolve(__dirname, './lib/browse_missing_album_art.png');
