@@ -59,6 +59,9 @@ This software is in no way affiliated nor endorsed by Sonos inc.
 Change log
 ==========
 
+ * 0.12.1 Attempted to fix Safari rendering bug for play/pause icon
+ * 0.12.0 Support household filtering. Requires sonos-discovery 0.12.0 or higher
+ * 0.7.0 Refactoring attempt
  * 0.6.2 Now handles startup from different working directory (like, node /opt/sonos-web-server/server.js)
  * 0.6.1 Fixed the mute state problem
  * 0.6.0 Progressbar, mouse wheel and incremental click. Styled scrollbars (Chrome only). Fixed wonky player volumes (when dragging)
