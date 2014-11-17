@@ -73,6 +73,25 @@ h4 {
 
 }
 
+/* play-pause toggle */
+#play-pause {
+	display: inline-block;
+}
+
+#play-pause #play,
+#play-pause #pause {
+	width: 44px;
+	height: 42px;
+}
+
+#play-pause.play #pause {
+	display: none;
+}
+
+#play-pause.pause #play {
+	display: none;
+}
+
 /* grey container */
 #top-control {
 	border-radius: 5px;

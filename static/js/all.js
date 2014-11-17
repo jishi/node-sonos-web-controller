@@ -88,13 +88,15 @@ function updateCurrentStatus() {
 function updateControllerState() {
 	var currentZone = Sonos.currentZoneCoordinator();
 	var state = currentZone.state.zoneState;
-	var playPauseButton = document.getElementById('play-pause');
+	var playPause = document.getElementById('play-pause');
 
-	if (state == "PLAYING") {
-		playPauseButton.src = '/svg/pause.svg';
+	if (state == 'PLAYING') {
+		playPause.className = 'pause';
 	} else {
-		playPauseButton.src = '/svg/play.svg';
+		playPause.className = 'play';
 	}
+
+
 
 	// Fix volume
 	GUI.masterVolume.setVolume(currentZone.groupState.volume);
