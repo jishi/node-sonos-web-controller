@@ -49,19 +49,32 @@ document.getElementById('master-mute').addEventListener('click', function () {
 
 });
 
-document.getElementById('play-pause').addEventListener('click', function () {
+document.getElementById('play').addEventListener('click', function () {
 
-	var action;
+	// var action;
 	// Find state of current player
-	var player = Sonos.currentZoneCoordinator();
-	if (player.state.zoneState == "PLAYING" ) {
-		action = 'pause';
-	} else {
-		action = 'play';
-	}
+	// var player = Sonos.currentZoneCoordinator();
+	// if (player.state.zoneState == "PLAYING" ) {
+	// 	action = 'pause';
+	// } else {
+	// 	action = 'play';
+	// }
 
-	console.log(action, Sonos.currentState)
-	Socket.socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
+	Socket.socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: 'play' });
+});
+
+document.getElementById('pause').addEventListener('click', function () {
+
+	// var action;
+	// Find state of current player
+	// var player = Sonos.currentZoneCoordinator();
+	// if (player.state.zoneState == "PLAYING" ) {
+	// 	action = 'pause';
+	// } else {
+	// 	action = 'play';
+	// }
+
+	Socket.socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: 'pause' });
 });
 
 document.getElementById('next').addEventListener('click', function () {
