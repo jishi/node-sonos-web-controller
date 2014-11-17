@@ -25,7 +25,7 @@ body {
 }
 
 #controls {
-	width: calc(100% - 16px);
+	width: calc(100% - 20px);
 	position: absolute;
 	bottom: 0;
 }
@@ -37,12 +37,35 @@ body {
 	border-radius: 4vw;
 }
 
-#master-volume .scrubber {
-	width: 3vw;
-	height: 3vw;
-	border-radius: 3vw;
+#master-volume .scrubber,
+.volume-bar .scrubber {
+	width: 4vh;
+	height: 4vh;
+	border-radius: 2vh;
 	background: #fff;
 }
-#master-volume .background {
-	top: 1.5vw;
+#master-volume .background,
+.volume-bar .background {
+	top: 2vh;
 }
+
+#master-volume .tooltip,
+.volume-bar .tooltip {
+	padding: 4px 6px 2px;
+    font-size: 3vh;
+    margin-top: -5vh;
+}
+
+
+#player-volumes h6 {
+    font-size: 4vh;
+    margin: 1.5vh 5vh -2vh;
+}
+
+#player-volumes-container {
+	width: 49vw;
+	margin-left: 50vw;
+
+}
+
+

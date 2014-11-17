@@ -1,0 +1,32 @@
+@font-face
+{
+  font-family:sonos-logoregular;
+  src: url(sonos-logo-regular-webfont.woff);
+  font-weight:400;
+  font-style:normal;
+}
+
+@font-face
+{
+  font-family:sonoshandbookproregular;
+  src: url(sonoshandbookpro-regular-webfont.woff);
+  font-weight:400;
+  font-style:normal;
+}
+
+@font-face
+{
+  font-family:sonoshandbookpromedium;
+  src: url(sonoshandbookpro-medium-webfont.woff);
+  font-weight:400;
+  font-style:normal;
+}
+
+@font-face
+{
+  font-family:sonoshandbookprolight;
+  src:url(sonoshandbookpro-light-webfont.woff);
+  font-weight:400;
+  font-style:normal;
+}
+

@@ -33,12 +33,18 @@ body {
 	border-radius: 2vw;
 	background: #fff;
 }
+
 #master-volume .background,
 .volume-bar .background {
 	top: 2vw;
 }
 
 #player-volumes h6 {
-	margin: 1.5vh 0 -2vh 0;
+	margin: 1.5vh 1.5vh -2vh;
+	font-size: 4vw;
+}
+
+#player-volumes-container {
+	width: 99vw;
 }
 
