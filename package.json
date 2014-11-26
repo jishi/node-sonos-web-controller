@@ -8,7 +8,7 @@
     "url": "https://github.com/jishi/node-sonos-web-controller.git"
   },
   "dependencies": {
-    "sonos-discovery": "git+https://github.com/jishi/node-sonos-discovery.git#master",
+    "sonos-discovery": "https://github.com/jishi/node-sonos-discovery/tarball/master/",
     "node-static": "0.7.x",
     "socket.io": "0.9.x"
   },
