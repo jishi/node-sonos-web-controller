@@ -20,10 +20,10 @@ Main target is to be able to run this on a raspberry pi, but any node.js compati
 * Chrome latest version (31 as of today)
 * Firefox latest version (25 as of today)
 
-For a screenshot of current progress, see: http://upload.grabbarna.se/files/sonos-web-controller.png
+For a screenshot of current progress, see: http://upload.grabbarna.se/files/sonos-web-controller-201412.png
 For a video demo: http://www.youtube.com/watch?v=_7Dke5LsTF0
 
-Currently, prev, next, play/pause and the progress bar works. Group volume works as well, but not as expected (and doesn't update). Track info, player state and progress bar updates instantly when controlled from another device, which was one of the main goals with this project.
+Currently, prev, next, play/pause and the progress bar works. Volume (player and group) work as well. Track info, player state and progress bar updates instantly when controlled from another device, which was one of the main goals with this project. You can group and ungroup via drag n' drop, and you can change music source using your favorites (no browsing atm). Also, different playmode options can be toggled: repeat, random, crossfade.
 
 settings.json
 =============
