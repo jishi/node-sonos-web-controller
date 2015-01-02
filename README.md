@@ -20,10 +20,10 @@ Main target is to be able to run this on a raspberry pi, but any node.js compati
 * Chrome latest version (31 as of today)
 * Firefox latest version (25 as of today)
 
-For a screenshot of current progress, see: http://upload.grabbarna.se/files/sonos-web-controller.png
+For a screenshot of current progress, see: http://upload.grabbarna.se/files/sonos-web-controller-201412.png
 For a video demo: http://www.youtube.com/watch?v=_7Dke5LsTF0
 
-Currently, prev, next, play/pause and the progress bar works. Group volume works as well, but not as expected (and doesn't update). Track info, player state and progress bar updates instantly when controlled from another device, which was one of the main goals with this project.
+Currently, prev, next, play/pause and the progress bar works. Volume (player and group) work as well. Track info, player state and progress bar updates instantly when controlled from another device, which was one of the main goals with this project. You can group and ungroup via drag n' drop, and you can change music source using your favorites (no browsing atm). Also, different playmode options can be toggled: repeat, random, crossfade.
 
 settings.json
 =============
@@ -59,6 +59,9 @@ This software is in no way affiliated nor endorsed by Sonos inc.
 Change log
 ==========
 
+ * 0.12.1 Attempted to fix Safari rendering bug for play/pause icon
+ * 0.12.0 Support household filtering. Requires sonos-discovery 0.12.0 or higher
+ * 0.7.0 Refactoring attempt
  * 0.6.2 Now handles startup from different working directory (like, node /opt/sonos-web-server/server.js)
  * 0.6.1 Fixed the mute state problem
  * 0.6.0 Progressbar, mouse wheel and incremental click. Styled scrollbars (Chrome only). Fixed wonky player volumes (when dragging)

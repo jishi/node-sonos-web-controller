@@ -299,6 +299,7 @@ function renderFavorites(favorites) {
 		var span = document.createElement('span');
 		span.textContent = favorite.title;
 		var albumArt = document.createElement('img');
+		albumArt.addEventListener('error', imageErrorHandler);
 		albumArt.src = favorite.albumArtURI;
 		li.appendChild(albumArt);
 		li.appendChild(span);
@@ -308,6 +309,12 @@ function renderFavorites(favorites) {
 
 
 	oldContainer.parentNode.replaceChild(newContainer, oldContainer);
+}
+
+function imageErrorHandler() {
+	console.log('error handler')
+	this.removeEventListener('error', imageErrorHandler);
+	this.src = "/images/browse_missing_album_art.png";
 }
 
 function renderQueue(queue) {

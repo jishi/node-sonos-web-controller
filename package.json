@@ -1,6 +1,6 @@
 {
   "name": "sonos-web-controller",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "description": "Web based controller for your Sonos system",
   "author": "Jimmy Shimizu <jimmy@shimizu.se>",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "https://github.com/jishi/node-sonos-web-controller.git"
   },
   "dependencies": {
-    "sonos-discovery": "git+https://github.com/jishi/node-sonos-discovery.git#master",
+    "sonos-discovery": "https://github.com/jishi/node-sonos-discovery/tarball/master/",
     "node-static": "0.7.x",
     "socket.io": "0.9.x"
   },
