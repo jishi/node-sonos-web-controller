@@ -312,7 +312,6 @@ function renderFavorites(favorites) {
 }
 
 function imageErrorHandler() {
-	console.log('error handler')
 	this.removeEventListener('error', imageErrorHandler);
 	this.src = "/images/browse_missing_album_art.png";
 }

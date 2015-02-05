@@ -108,6 +108,27 @@ h4 {
 	background-image: linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
 }
 
+#search {
+	position: absolute;
+	right: 50px;
+	top: 30px;
+}
+
+#search input {
+	height: 16px;
+	padding: 2px 8px;
+	border-bottom-left-radius: 8px;
+	border-top-left-radius: 8px;
+	border: none;
+}
+#search button {
+	height: 20px;
+	padding: 2px 4px;
+	border-bottom-right-radius: 8px;
+	border-top-right-radius: 8px;
+	border: none;
+}
+
 /* blue container */
 #zone-container h4,
 #status-container h4,

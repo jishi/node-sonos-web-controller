@@ -68,3 +68,8 @@ Socket.socket.on('favorites', function (data) {
 Socket.socket.on('queue', function (data) {
 	if (Socket.queueChanged instanceof Function) Socket.queueChanged(data);
 });
+
+
+Socket.socket.on('search-result', function (data) {
+	console.log('received result', data);
+})

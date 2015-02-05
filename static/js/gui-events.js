@@ -165,3 +165,12 @@ document.getElementById("current-track-art").addEventListener('load', function (
 	oldFavicon.parentNode.replaceChild(newFavicon, oldFavicon);
 
 });
+
+var searchTimer = null;
+document.getElementById('searchfield').addEventListener('keyup', function (e) {
+	if (searchTimer) clearTimeout(searchTimer);
+	var searchTerm = this.value;
+	searchTimer = setTimeout(function () {
+		Socket.socket.emit('search', { type: 'localIndex', term: searchTerm });
+	}, 500);
+});
