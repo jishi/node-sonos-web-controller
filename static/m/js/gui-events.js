@@ -3,7 +3,7 @@ document.getElementById('play-pause').addEventListener('click', function () {
 	var action;
 	// Find state of current player
 	var player = Sonos.currentZoneCoordinator();
-	if (player.state.zoneState == "PLAYING" ) {
+	if (player.state.zoneState == 'PLAYING' ) {
 		action = 'pause';
 	} else {
 		action = 'play';
@@ -19,19 +19,33 @@ document.getElementById('next').addEventListener('click', function () {
 	Socket.socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 document.getElementById('prev').addEventListener('click', function () {
-	var action = "previousTrack";
+	var action = 'previousTrack';
 	console.log(action, Sonos.currentState)
 	Socket.socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 
-document.getElementById('master-volume').addEventListener('click', function (e) {
-	var playerContainer = document.getElementById("player-volumes-container");
-	if (playerContainer.classList.contains('show')) {
-		playerContainer.classList.remove("show");
-	} else {
-		playerContainer.classList.add("show");
+document.addEventListener('click', function (e) {
+
+	var playerContainer = document.getElementById('player-volumes-container');
+	// if click is inside this node, do nothing
+	if (isChildOf(e.target, playerContainer)) {
+		return;
 	}
 
+
+	if (playerContainer.classList.contains('show')) {
+		playerContainer.classList.remove('show');
+	} else if (isChildOf(e.target, document.getElementById('master-volume'))) {
+		playerContainer.classList.add('show');
+	}
 });
+
+function isChildOf(child, parent) {
+	if (child == parent) return true;
+	if (child.parentNode)
+		return isChildOf(child.parentNode, parent);
+
+	return false;
+}
 
 
