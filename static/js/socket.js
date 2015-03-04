@@ -71,5 +71,5 @@ Socket.socket.on('queue', function (data) {
 
 
 Socket.socket.on('search-result', function (data) {
-	console.log('received result', data);
+	if (Socket.searchResultReceived instanceof Function) Socket.searchResultReceived(data);
 })

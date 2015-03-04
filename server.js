@@ -311,10 +311,10 @@ function search(term, socket) {
 
   var response = {};
 
-  async.series([
+  async.parallelLimit([
     function (callback) {
       var player = getPlayer();
-      console.log(player)
+      console.log('fetching from', player.address)
       player.browse('A:ARTIST:' + term, 0, 600, function (success, result) {
         console.log(success, result)
         response.byArtist = result;
@@ -323,6 +323,7 @@ function search(term, socket) {
     },
     function (callback) {
       var player = getPlayer();
+      console.log('fetching from', player.address)
       player.browse('A:TRACKS:' + term, 0, 600, function (success, result) {
         response.byTrack = result;
         callback(null, 'track');
@@ -330,13 +331,14 @@ function search(term, socket) {
     },
     function (callback) {
       var player = getPlayer();
+      console.log('fetching from', player.address)
       player.browse('A:ALBUM:' + term, 0, 600, function (success, result) {
         response.byAlbum = result;
         callback(null, 'album');
       });
     }
-  ], function (err, result) {
-    console.log(socket);
+  ], players.length, function (err, result) {
+
     socket.emit('search-result', response);
   });
 }
