@@ -10,7 +10,8 @@
   "dependencies": {
     "sonos-discovery": "https://github.com/jishi/node-sonos-discovery/archive/0.15.3.tar.gz",
     "node-static": "0.7.x",
-    "socket.io": "0.9.x"
+    "socket.io": "0.9.x",
+    "async": "0.9.x"
   },
   "engine": "node 0.8.x"
 }
