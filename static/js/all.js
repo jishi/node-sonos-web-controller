@@ -159,7 +159,9 @@ function toFormattedTime(seconds) {
 
 		// minutes
 		var minutes = Math.floor(remainingTime/60);
-		chunks.push(zpad(minutes, 1));
+		// If we have hours, pad minutes, otherwise not.
+		var padding = chunks.length > 0 ? 2 : 1;
+		chunks.push(zpad(minutes, padding));
 		remainingTime -= minutes * 60;
 		// seconds
 		chunks.push(zpad(Math.floor(remainingTime), 2))
