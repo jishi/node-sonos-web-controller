@@ -187,8 +187,8 @@ h4 {
 	vertical-align: top;
 }
 
-#status-container #current-track-info div,
-#status-container #current-radio-info div  {
+#status-container #current-track-info div.info-container,
+#status-container #current-radio-info div.info-container  {
 	padding-top: 20px;
 	padding-bottom: 30px;
 	width: calc(100% - 220px);
@@ -196,15 +196,39 @@ h4 {
 	word-wrap: nowrap;
 }
 
-#status-container div#current-track-info {
-	perspective: 600px;
+#status-container div.art-container {
+	perspective: 160px;
+	width: 160px;
+	height: 160px;
+	position: relative;
 }
+
+#status-container div.art-container .mirror {
+	transform: rotateY(10deg) translateZ(-35px);
+	/* for firefox edge smoothing */
+	outline: 1px solid transparent;
+}
+
+/*
+#status-container div.art-container .mirror:before {
+    background: -moz-element(#current-track-art) no-repeat;
+    content: "";
+    height: 160px;
+    width: 160px;
+    left: 0;
+    padding: 1px 0;
+    position: absolute;
+    top: 120px;
+    transform: scaleY(-1);
+
+}
+*/
 
 #status-container img#current-track-art {
 	max-height: 160px;
 	max-width: 160px;
 	margin-top: 5px;
-	transform: rotateY(45deg);
+
 	-webkit-box-reflect: below 0
 		-webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.75, transparent), to(rgba(255, 255, 255, 0.5)));
 
@@ -288,6 +312,8 @@ h4 {
 
 #zone-wrapper {
 	border-top: #012947 solid 1px;
+	height: calc(100% - 38px);
+	overflow-y: auto;
 }
 
 #music-sources-container {
