@@ -5,7 +5,8 @@
 
 var Socket = Socket || {};
 
-Socket.socket = io.connect('/');
+var target = window.location.protocol + '//' + window.location.hostname + ':8080';
+Socket.socket = io.connect(target);
 
 Socket.socket.on('topology-change', function (data) {
 	Sonos.grouping = {};
