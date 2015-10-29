@@ -77,3 +77,7 @@ socket.on('queue', function (data) {
 	if (data.uuid != Sonos.currentState.selectedZone) return;
 	renderQueue(data.queue);
 });
+
+socket.on('search-result', function (data) {
+	console.log('received result', data);
+})

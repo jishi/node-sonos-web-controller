@@ -4,6 +4,7 @@ body {
 	background-image: -webkit-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 	background-image: -ms-linear-gradient(top, rgb(81,81,81) 30px, rgb(0,0,0) 130px);
 	margin: 5px 5px 0 5px;
+	color: #bbb;
 }
 
 ::-webkit-scrollbar {
@@ -108,6 +109,27 @@ h4 {
 	background-image: linear-gradient(bottom, rgb(37,37,37) 5%, rgb(81,81,81) 95%);
 }
 
+#search {
+	position: absolute;
+	right: 50px;
+	top: 30px;
+}
+
+#search input {
+	height: 16px;
+	padding: 2px 8px;
+	border-bottom-left-radius: 8px;
+	border-top-left-radius: 8px;
+	border: none;
+}
+#search button {
+	height: 20px;
+	padding: 2px 4px;
+	border-bottom-right-radius: 8px;
+	border-top-right-radius: 8px;
+	border: none;
+}
+
 /* blue container */
 #zone-container h4,
 #status-container h4,
@@ -117,7 +139,7 @@ h4 {
 	background-image: linear-gradient(top, #002C4D 2%, #001C38 90%);
 	margin: 0;
 	color: #0A97FF;
-	font-size: 15px;
+	font-size: 13px;
 }
 
 #status-container h4#now-playing {
@@ -132,36 +154,88 @@ h4 {
 	border-radius: 0;
 }
 
-#status-container #current-track-info {
+#status-container.radio #current-track-info {
+	display: none;
+}
+#status-container.radio #current-radio-info {
+	display: block;
+}
+
+#status-container.track #current-track-info {
+	display: block;
+}
+#status-container.track #current-radio-info {
+	display: none;
+}
+
+
+#status-container #current-track-info,
+#status-container #current-radio-info {
 	background-image: -moz-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
 	background-image: -webkit-linear-gradient(top, rgb(5,68,114) 10%, #021B2E 100%);
 	border-top: 1px solid rgb(37,85,125);
-	height: 224px;
 	padding-top: 10px;
 	padding-left: 5px;
+	padding-bottom: 10px;
 }
 
 #status-container #current-track-info div,
-#status-container #current-track-info img {
+#status-container #current-track-info img,
+#status-container #current-radio-info div,
+#status-container #current-radio-info img {
 	display: inline-block;
 	vertical-align: top;
 }
 
-#status-container #current-track-info div {
+#status-container #current-track-info div.info-container,
+#status-container #current-radio-info div.info-container  {
 	padding-top: 20px;
-	padding-left: 20px;
-	padding-bottom: 1px;
+	padding-bottom: 30px;
 	width: calc(100% - 220px);
 	overflow: hidden;
 	word-wrap: nowrap;
 }
 
-#status-container #current-track-info img {
-	max-height: 180px;
-	max-width: 180px;
+#status-container div.art-container {
+	perspective: 160px;
+	width: 160px;
+	height: 160px;
+	position: relative;
 }
 
-#status-container #current-track-info div p {
+#status-container div.art-container .mirror {
+	transform: rotateY(10deg) translateZ(-35px);
+	/* for firefox edge smoothing */
+	outline: 1px solid transparent;
+}
+
+/*
+#status-container div.art-container .mirror:before {
+    background: -moz-element(#current-track-art) no-repeat;
+    content: "";
+    height: 160px;
+    width: 160px;
+    left: 0;
+    padding: 1px 0;
+    position: absolute;
+    top: 120px;
+    transform: scaleY(-1);
+
+}
+*/
+
+#status-container img#current-track-art {
+	max-height: 160px;
+	max-width: 160px;
+	margin-top: 5px;
+
+	-webkit-box-reflect: below 0
+		-webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.75, transparent), to(rgba(255, 255, 255, 0.5)));
+
+}
+
+#status-container #current-track-info div p,
+#status-container #current-radio-info div p {
 	height: 36px;
 	width: 100%;
 }
@@ -175,7 +249,7 @@ h4 {
 #status-container h6 {
 	color: rgb(4,90,218);
 	font-weight: normal;
-	font-size: 14px;
+	font-size: 13px;
 	margin: 0;
 }
 
@@ -188,7 +262,7 @@ h4 {
 
 #status-container p {
 	margin: 0;
-	font-size: 14px;
+	font-size: 12px;
 }
 
 /* rounded containers */
@@ -208,8 +282,7 @@ h4 {
 #zone-container,
 #status-container,
 #music-sources-container {
-	width: -webkit-calc((100% - 15px) / 3);
-	width: calc(40% - 4px);
+	width: calc(25% - 4px);
 	display: inline-block;
 	height: 100%;
 	height: calc(100vh - 105px);
@@ -218,9 +291,14 @@ h4 {
 	overflow: hidden;
 }
 
-#zone-container,
+#zone-container {
+	width: calc(25% - 4px);
+}
+#status-container {
+	width: calc(35% - 4px);
+}
 #music-sources-container {
-	width: calc(30% - 4px);
+	width: calc(40% - 4px);
 }
 
 #zone-container h4,
@@ -234,6 +312,8 @@ h4 {
 
 #zone-wrapper {
 	border-top: #012947 solid 1px;
+	height: calc(100% - 38px);
+	overflow-y: auto;
 }
 
 #music-sources-container {
@@ -466,7 +546,7 @@ h4 {
 	margin: 0;
 	padding: 0;
 	padding: 1px 0 1px 0;
-	font-size: 14px;
+	font-size: 12px;
 	width: 100%;
 	transition: all 0.15s;
 }
@@ -514,7 +594,7 @@ h4 {
 
 #favorites-container li span {
 	padding: 3px;
-	line-height: 22px;
+	line-height: 40px;
 }
 
 #queue-container {

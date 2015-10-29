@@ -4,6 +4,7 @@ var io = require('socket.io');
 var fs = require('fs');
 var path = require('path');
 var crypto = require('crypto');
+var async = require('async');
 var SonosDiscovery = require('sonos-discovery');
 var settings = {
   port: 8080,
@@ -214,6 +215,10 @@ socketServer.sockets.on('connection', function (socket) {
     player.trackSeek(data.elapsed);
   });
 
+  socket.on('search', function (data) {
+    search(data.term, socket);
+  });
+
 
   socket.on("error", function (e) {
     console.log(e);
@@ -289,6 +294,54 @@ function loadQueue(uuid, socket) {
       getQueue(queue.items.length, maxRequestedCount);
     }
   }
+}
+
+function search(term, socket) {
+  console.log('search for', term)
+  var playerCycle = 0;
+  var players = [];
+
+  for (var i in discovery.players) {
+    players.push(discovery.players[i]);
+  }
+
+  function getPlayer() {
+    var player = players[playerCycle++%players.length];
+    return player;
+  }
+
+  var response = {};
+
+  async.parallelLimit([
+    function (callback) {
+      var player = getPlayer();
+      console.log('fetching from', player.address)
+      player.browse('A:ARTIST:' + term, 0, 600, function (success, result) {
+        console.log(success, result)
+        response.byArtist = result;
+        callback(null, 'artist');
+      });
+    },
+    function (callback) {
+      var player = getPlayer();
+      console.log('fetching from', player.address)
+      player.browse('A:TRACKS:' + term, 0, 600, function (success, result) {
+        response.byTrack = result;
+        callback(null, 'track');
+      });
+    },
+    function (callback) {
+      var player = getPlayer();
+      console.log('fetching from', player.address)
+      player.browse('A:ALBUM:' + term, 0, 600, function (success, result) {
+        response.byAlbum = result;
+        callback(null, 'album');
+      });
+    }
+  ], players.length, function (err, result) {
+
+    socket.emit('search-result', response);
+  });
 }
 
 // Attach handler for socket.io

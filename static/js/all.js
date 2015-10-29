@@ -41,21 +41,37 @@ Socket.queueChanged = function (data) {
 	renderQueue(data.queue);
 }
 
+Socket.searchResultReceived = function (data) {
+	renderSearchResult(data);
+}
+
 ///
 /// ACTIONS
 ///
 
 function updateCurrentStatus() {
 	var selectedZone = Sonos.currentZoneCoordinator();
-	document.getElementById("current-track-art").src =  selectedZone.state.currentTrack.albumArtURI;
-	document.getElementById('page-title').textContent = selectedZone.state.currentTrack.title + ' - Sonos Web Controller';
-	document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
-	document.getElementById("artist").textContent = selectedZone.state.currentTrack.artist;
-	document.getElementById("album").textContent = selectedZone.state.currentTrack.album;
 
-	if (selectedZone.state.nextTrack) {
-		var nextTrack = selectedZone.state.nextTrack;
-		document.getElementById("next-track").textContent = nextTrack.title + " - " + nextTrack.artist;
+	document.getElementById('page-title').textContent = selectedZone.state.currentTrack.title + ' - Sonos Web Controller';
+
+	if (selectedZone.state.currentTrack.type == 'radio') {
+		// update radio
+		document.getElementById("current-radio-art").src = selectedZone.state.currentTrack.albumArtURI;
+		document.getElementById("station").textContent = selectedZone.state.currentTrack.title;
+		document.getElementById("information").textContent = selectedZone.state.currentTrack.streamInfo;
+		document.getElementById("status-container").className = "radio";
+
+	} else {
+		document.getElementById("current-track-art").src =  selectedZone.state.currentTrack.albumArtURI;
+		document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
+		document.getElementById("artist").textContent = selectedZone.state.currentTrack.artist;
+		document.getElementById("album").textContent = selectedZone.state.currentTrack.album;
+
+		if (selectedZone.state.nextTrack) {
+			var nextTrack = selectedZone.state.nextTrack;
+			document.getElementById("next-track").textContent = nextTrack.title + " - " + nextTrack.artist;
+		}
+		document.getElementById("status-container").className = "track";
 	}
 
 	console.log(selectedZone)
@@ -143,7 +159,9 @@ function toFormattedTime(seconds) {
 
 		// minutes
 		var minutes = Math.floor(remainingTime/60);
-		chunks.push(zpad(minutes, 1));
+		// If we have hours, pad minutes, otherwise not.
+		var padding = chunks.length > 0 ? 2 : 1;
+		chunks.push(zpad(minutes, padding));
 		remainingTime -= minutes * 60;
 		// seconds
 		chunks.push(zpad(Math.floor(remainingTime), 2))
@@ -312,7 +330,6 @@ function renderFavorites(favorites) {
 }
 
 function imageErrorHandler() {
-	console.log('error handler')
 	this.removeEventListener('error', imageErrorHandler);
 	this.src = "/images/browse_missing_album_art.png";
 }
@@ -395,6 +412,9 @@ function lazyLoadImages(container) {
 		img.className = 'loaded';
 
 	}
+}
+
+function renderSearchResult(result) {
 
 }
 
