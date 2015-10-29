@@ -58,7 +58,7 @@ This software is in no way affiliated nor endorsed by Sonos inc.
 
 Change log
 ==========
-
+ * 0.13.0 Merged mobile branch with simplified mobile view (/m)
  * 0.12.1 Attempted to fix Safari rendering bug for play/pause icon
  * 0.12.0 Support household filtering. Requires sonos-discovery 0.12.0 or higher
  * 0.7.0 Refactoring attempt
