@@ -9,6 +9,7 @@ Socket.topologyChanged = function (shouldRenderVolumes) {
 }
 
 Socket.transportStateChanged = function (player) {
+	if (player.state.playerState == 'TRANSITIONING') return;
 	reRenderZones();
 	updateControllerState();
 	updateCurrentStatus();
@@ -202,7 +203,7 @@ var zoneManagement = function() {
 	}
 
 	function handleDrop(e) {
-		if (e.target == this) {
+		if (e.target.parentNode == this) {
 			// detach
 			console.log("detach");
 			Socket.socket.emit('group-management', {player: dragItem.dataset.id, group: null});

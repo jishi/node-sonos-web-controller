@@ -138,9 +138,7 @@ socketServer.sockets.on('connection', function (socket) {
     if (!player) return;
 
     // invoke action
-    //console.log(data)
-    console.log(data.volume)
-    player.groupSetVolume(data.volume);
+    copns.groupSetVolume(data.volume);
   });
 
   socket.on('group-management', function (data) {

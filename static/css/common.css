@@ -1,7 +1,8 @@
 body {
 	background: #000000;
 	color: #fff;
-	font-family: Arial, sans-serif;
+	font-family: 'sonoshandbookproregular', sans-serif;
+	font-size: 15px;
 	min-width: 800px;
 	overflow: hidden;
 	-moz-user-select: none;

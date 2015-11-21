@@ -23,7 +23,7 @@ body {
 }
 
 h4 {
-	font-size: 13px;
+	font-size: 100%;
 }
 
 #top-control {
@@ -139,7 +139,7 @@ h4 {
 	background-image: linear-gradient(top, #002C4D 2%, #001C38 90%);
 	margin: 0;
 	color: #0A97FF;
-	font-size: 13px;
+	font-size: 100%;
 }
 
 #status-container h4#now-playing {
@@ -249,7 +249,7 @@ h4 {
 #status-container h6 {
 	color: rgb(4,90,218);
 	font-weight: normal;
-	font-size: 13px;
+	font-size: 100%;
 	margin: 0;
 }
 
@@ -262,7 +262,7 @@ h4 {
 
 #status-container p {
 	margin: 0;
-	font-size: 12px;
+	font-size: 100%;
 }
 
 /* rounded containers */
@@ -304,6 +304,8 @@ h4 {
 #zone-container h4,
 #status-container h4,
 #music-sources-container h4 {
+	font-weight: 600;
+	font-size: 120%;
 	padding: 10px;
 	margin: 0;
 	border-bottom: 1px solid #000000;
@@ -435,7 +437,7 @@ h4 {
 	margin: 0px 38px 0 38px;
 	height: 22px;
 	background-image: url(../images/tc_progress_container_center.png);
-	font-size: 11px;
+	font-size: 70%;
 	color: #666;
 	text-shadow: #111 0px -1px;
 }
@@ -527,7 +529,7 @@ h4 {
 
 #zone-wrapper ul span {
 	vertical-align: super;
-	font-size: 14px;
+	font-size: 140%;
 }
 
 #favorites-container,
@@ -546,7 +548,7 @@ h4 {
 	margin: 0;
 	padding: 0;
 	padding: 1px 0 1px 0;
-	font-size: 12px;
+	font-size: 100%;
 	width: 100%;
 	transition: all 0.15s;
 }
@@ -582,7 +584,7 @@ h4 {
 #queue-container li div p {
 	margin: 0;
 	line-height: 18px;
-	font-size: 13px;
+	font-size: 100%;
 	overflow: hidden;
 	width: 100%;
 	white-space: nowrap;
