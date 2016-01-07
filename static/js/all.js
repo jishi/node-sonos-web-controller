@@ -55,15 +55,16 @@ function updateCurrentStatus() {
 
 	document.getElementById('page-title').textContent = selectedZone.state.currentTrack.title + ' - Sonos Web Controller';
 
+	var prefix = (window.location.pathname != '/') ? window.location.pathname : ''
 	if (selectedZone.state.currentTrack.type == 'radio') {
 		// update radio
-		document.getElementById("current-radio-art").src = selectedZone.state.currentTrack.albumArtURI;
+		document.getElementById("current-radio-art").src = prefix + selectedZone.state.currentTrack.albumArtURI;
 		document.getElementById("station").textContent = selectedZone.state.currentTrack.title;
 		document.getElementById("information").textContent = selectedZone.state.currentTrack.streamInfo;
 		document.getElementById("status-container").className = "radio";
 
 	} else {
-		document.getElementById("current-track-art").src =  selectedZone.state.currentTrack.albumArtURI;
+		document.getElementById("current-track-art").src = prefix + selectedZone.state.currentTrack.albumArtURI;
 		document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
 		document.getElementById("artist").textContent = selectedZone.state.currentTrack.artist;
 		document.getElementById("album").textContent = selectedZone.state.currentTrack.album;
@@ -121,9 +122,9 @@ function updateControllerState() {
 	// fix mute
 	var masterMute = document.getElementById('master-mute');
 	if (currentZone.groupState.mute) {
-		masterMute.src = "/svg/mute_on.svg";
+		masterMute.src = "svg/mute_on.svg";
 	} else {
-		masterMute.src = "/svg/mute_off.svg";
+		masterMute.src = "svg/mute_off.svg";
 	}
 
 	// fix volume container
@@ -347,10 +348,10 @@ function renderQueue(queue) {
 		li.tabIndex = trackIndex;
 
 		var albumArt = document.createElement('img');
-		//albumArt.src = q.albumArtURI;
-		albumArt.dataset.src = q.albumArtURI;
+		var prefix = (window.location.pathname != '/') ? window.location.pathname : ''
+		albumArt.dataset.src = prefix + q.albumArtURI;
 		if (trackIndex < 20) {
-			albumArt.src = q.albumArtURI;
+			albumArt.src = prefix + q.albumArtURI;
 			albumArt.className = "loaded";
 		}
 
