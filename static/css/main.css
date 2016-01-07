@@ -370,9 +370,12 @@ h4 {
 	opacity: 1;
 	-webkit-transition: -webkit-opacity 0.3s, -webkit-transform 0.3s;
 	transition: opacity 0.3s, transform 0.3s;
-
 }
 
+
+#player-volumes h6 {
+	font-size: 110%;
+}
 #player-volumes.loading {
 	visibility: hidden;
 	-webkit-transform: scale(0);
