@@ -108,9 +108,11 @@ function updateControllerState() {
 	var state = currentZone.state.zoneState;
 	var playPause = document.getElementById('play-pause');
 
-	if (state == 'PLAYING') {
+	console.log(state)
+
+	if (state === 'PLAYING') {
 		playPause.className = 'pause';
-	} else {
+	} else if (state === 'PAUSED_PLAYBACK') {
 		playPause.className = 'play';
 	}
 

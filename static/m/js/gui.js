@@ -38,10 +38,10 @@ var GUI = {
 		var state = selectedZone.state.zoneState;
 		var playPauseButton = document.getElementById('play-pause');
 
-		if (state == "PLAYING") {
-			playPauseButton.src = '/svg/pause.svg';
-		} else {
-			playPauseButton.src = '/svg/play.svg';
+		if (state == 'PLAYING') {
+			playPauseButton.src = '../svg/pause.svg';
+		} else if (state === 'PAUSED_PLAYBACK' ){
+			playPauseButton.src = '../svg/play.svg';
 		}
 
 		GUI.masterVolume.setVolume(selectedZone.groupState.volume);
