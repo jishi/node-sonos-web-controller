@@ -27,11 +27,9 @@ function ProgressBar(containerObj, callback) {
 		state.elapsed = selectedZone.state.elapsedTime;
 		state.duration = selectedZone.state.currentTrack.duration;
 		state.lastUpdate = selectedZone.stateTime;
-		state.zoneState = selectedZone.state.zoneState;
+		state.zoneState = selectedZone.state.playbackState;
 
 		clearInterval(tickerInterval);
-
-		console.log(state)
 
 		if (state.zoneState == "PLAYING")
 			tickerInterval = setInterval(updatePosition, 500);
@@ -67,7 +65,6 @@ function ProgressBar(containerObj, callback) {
 	}
 
 	function handleMouseWheel(e) {
-		console.log(state)
 		var newProgress;
 		state.elapsed = state.elapsed + (Date.now() - state.lastUpdate)/1000;
 		state.lastUpdate = Date.now();
@@ -83,7 +80,6 @@ function ProgressBar(containerObj, callback) {
 		state.slideInProgress = true;
 		setPosition( state.elapsed / state.duration );
 		updatePosition(true);
-		console.log("clearing", progressAdjustTimer)
 		clearTimeout(progressAdjustTimer);
 		progressAdjustTimer = setTimeout(function () { callback(state.elapsed / state.duration); state.slideInProgress = false}, 800);
 
@@ -95,7 +91,6 @@ function ProgressBar(containerObj, callback) {
 		state.elapsed = state.elapsed + (Date.now() - state.lastUpdate)/1000;
 		state.lastUpdate = Date.now();
 
-		console.log(e.layerX, state.currentX)
 		if(e.layerX > state.currentX) {
 			// volume down
 			state.elapsed += 2;
@@ -107,7 +102,6 @@ function ProgressBar(containerObj, callback) {
 		state.slideInProgress = true;
 		setPosition( state.elapsed / state.duration );
 		updatePosition(true);
-		console.log("clearing", progressAdjustTimer)
 		clearTimeout(progressAdjustTimer);
 		progressAdjustTimer = setTimeout(function () { callback(state.elapsed / state.duration); state.slideInProgress = false}, 2000);
 	}
@@ -129,13 +123,10 @@ function ProgressBar(containerObj, callback) {
 	state.slider = containerObj.querySelector('div');
 	state.currentX = state.slider.offsetLeft;
 
-	console.log(state)
-
 	state.slider.addEventListener('mousedown', function (e) {
 		state.slideInProgress = true;
 		state.cursorX = e.clientX;
 		state.originalX = state.currentX;
-		console.log(e, state)
 		state.slider.classList.add('sliding');
 		document.addEventListener('mousemove', onDrag);
 		e.preventDefault();
@@ -153,7 +144,6 @@ function ProgressBar(containerObj, callback) {
 	});
 
 	// Since Chrome 31 wheel event is also supported
-	console.log(containerObj)
 	containerObj.addEventListener("wheel", handleMouseWheel);
 
 	// For click-to-adjust

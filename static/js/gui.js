@@ -37,7 +37,6 @@ var GUI = {
 	progress: new ProgressBar(document.getElementById('position-bar'), function (position) {
 		// calculate new time
 		var player = Sonos.currentZoneCoordinator();
-		console.log(player.state)
 		var desiredElapsed = Math.round(player.state.currentTrack.duration * position);
 		player.state.elapsedTime = desiredElapsed;
 		Socket.socket.emit('track-seek', {uuid: player.uuid, elapsed: desiredElapsed});

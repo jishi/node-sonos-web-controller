@@ -5,7 +5,7 @@
 
 var Socket = Socket || {};
 
-var target = window.location.protocol + '//' + window.location.hostname + ':8080';
+var target = location.protocol + '//' + location.hostname + ':8080';
 Socket.socket = io.connect(target);
 
 Socket.socket.on('topology-change', function (data) {
@@ -18,8 +18,6 @@ Socket.socket.on('topology-change', function (data) {
 		if (!Sonos.grouping[player.coordinator]) Sonos.grouping[player.coordinator] = [];
 		Sonos.grouping[player.coordinator].push(player.uuid);
 	});
-
-	console.log("topology-change", Sonos.grouping, Sonos.players);
 
 	// If the selected group dissappeared, select a new one.
 	if (!Sonos.grouping[Sonos.currentState.selectedZone]) {
@@ -51,18 +49,22 @@ Socket.socket.on('group-volume', function (data) {
 	if (Socket.groupVolumeChanged instanceof Function) Socket.groupVolumeChanged(data);
 });
 
+Socket.socket.on('volume', function (data) {
+	console.log('volume', data)
+	if (Socket.volumeChanged instanceof Function) Socket.volumeChanged(data);
+});
+
 Socket.socket.on('group-mute', function (data) {
-	Sonos.players[data.uuid].groupState = data.state;
+	Sonos.players[data.uuid].groupState.mute = data.newMute;
 	if (Socket.groupMuteChanged instanceof Function) Socket.groupMuteChanged(data);
 });
 
 Socket.socket.on('mute', function (data) {
-	var player = Sonos.players[data.uuid];
-	player.state.mute = data.state.mute;
 	if (Socket.muteChanged instanceof Function) Socket.muteChanged(data);
 });
 
 Socket.socket.on('favorites', function (data) {
+	console.log('favorites', data);
 	if (Socket.favoritesChanged instanceof Function) Socket.favoritesChanged(data);
 });
 

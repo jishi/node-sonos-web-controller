@@ -3,7 +3,9 @@ Sonos Web Controller
 
 NOTE! THIS IS A WORK IN PROGRESS! This is a really early alpha. Things might break from time to time, until I settle a final release that I consider stable for daily use. Until then only master branch will exist.
 
-As a subtitute for the perl-based controller (www.purple.org) this project is aimed at giving similar controller as the native one, but in a browser.
+NOTE! **Requires node.js 4.0.0+**
+
+As a substitute for the perl-based controller (www.purple.org) this project is aimed at giving similar controller as the native one, but in a browser.
 
 Using node.js as backend, that will keep track of the state of the players, and WebSockets (socket.io) for a native feel (where the state of the players will be updated as soon as it changes).
 
@@ -58,6 +60,7 @@ This software is in no way affiliated nor endorsed by Sonos inc.
 
 Change log
 ==========
+ * 0.14.0 Upgraded to use sonos-discovery v1.1.2
  * 0.13.0 Merged mobile branch with simplified mobile view (/m)
  * 0.12.1 Attempted to fix Safari rendering bug for play/pause icon
  * 0.12.0 Support household filtering. Requires sonos-discovery 0.12.0 or higher

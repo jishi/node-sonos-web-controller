@@ -16,7 +16,6 @@ var GUI = {
 				HTTP.request("https://api.spotify.com/v1/tracks/" + RegExp.$1, function (res) {
 					// new coverart
 					var url = res.album.images[0].url;
-					console.log(url);
 					currentTrackArt.src = url;
 					// to identify if this is already loaded
 					currentTrackArt.dataset.spotifyUri = spotifyUri;
@@ -35,7 +34,7 @@ var GUI = {
 			document.getElementById("next-track").textContent = nextTrack.title + " - " + nextTrack.artist;
 		}
 
-		var state = selectedZone.state.zoneState;
+		var state = selectedZone.state.playbackState;
 		var playPauseButton = document.getElementById('play-pause');
 
 		if (state == 'PLAYING') {
@@ -108,8 +107,6 @@ var GUI = {
 			GUI.playerVolumes[uuid] = new TouchVolumeSlider(node, function (vol) {
 				Socket.socket.emit('volume', {uuid: uuid, volume: vol});
 			});
-
-			console.log(uuid, Sonos.players[uuid].state.volume);
 
 			GUI.playerVolumes[uuid].setVolume(Sonos.players[uuid].state.volume);
 		});

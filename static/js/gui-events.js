@@ -79,12 +79,10 @@ document.getElementById('pause').addEventListener('click', function () {
 
 document.getElementById('next').addEventListener('click', function () {
 	var action = "nextTrack";
-	console.log(action, Sonos.currentState)
 	Socket.socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 document.getElementById('prev').addEventListener('click', function () {
 	var action = "previousTrack";
-	console.log(action, Sonos.currentState)
 	Socket.socket.emit('transport-state', { uuid: Sonos.currentState.selectedZone, state: action });
 });
 
@@ -128,7 +126,7 @@ document.getElementById('position-info').addEventListener('click', function (e) 
 
 	var selectedZone = Sonos.currentZoneCoordinator();
 	// set this directly for instant feedback
-	selectedZone.playMode[action] = state;
+	selectedZone.state.playMode[action] = state;
 	updateCurrentStatus();
 	Socket.socket.emit('playmode', {uuid: Sonos.currentState.selectedZone, state: data});
 
@@ -157,7 +155,6 @@ document.getElementById('player-volumes-container').addEventListener('click', fu
 document.getElementById("current-track-art").addEventListener('load', function (e) {
 	// new image loaded. update favicon
 	// This prevents duplicate requests!
-	console.log('albumart loaded', this.src)
 	var oldFavicon = document.getElementById("favicon");
 	var newFavicon = oldFavicon.cloneNode();
 	newFavicon.href = this.src;
