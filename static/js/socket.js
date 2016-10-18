@@ -5,7 +5,7 @@
 
 var Socket = Socket || {};
 
-var target = location.protocol + '//' + location.hostname + ':8080';
+var target = location.origin;
 Socket.socket = io.connect(target);
 
 Socket.socket.on('topology-change', function (data) {
