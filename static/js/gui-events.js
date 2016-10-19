@@ -127,7 +127,7 @@ document.getElementById('position-info').addEventListener('click', function (e) 
 	var selectedZone = Sonos.currentZoneCoordinator();
 	// set this directly for instant feedback
 	selectedZone.state.playMode[action] = state;
-	updateCurrentStatus();
+	// updateCurrentStatus();
 	Socket.socket.emit('playmode', {uuid: Sonos.currentState.selectedZone, state: data});
 
 });

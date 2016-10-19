@@ -50,7 +50,6 @@ Socket.socket.on('group-volume', function (data) {
 });
 
 Socket.socket.on('volume', function (data) {
-	console.log('volume', data)
 	if (Socket.volumeChanged instanceof Function) Socket.volumeChanged(data);
 });
 
@@ -64,7 +63,6 @@ Socket.socket.on('mute', function (data) {
 });
 
 Socket.socket.on('favorites', function (data) {
-	console.log('favorites', data);
 	if (Socket.favoritesChanged instanceof Function) Socket.favoritesChanged(data);
 });
 

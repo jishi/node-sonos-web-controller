@@ -57,7 +57,6 @@
 				}
 			});
 
-			console.log(currentZone.state)
 			renderInfo();
 
 		});
@@ -70,10 +69,7 @@
 		});
 
 		function renderInfo() {
-
-
 			if (currentZone.state.nextTrack) {
-				console.log(currentZone, currentTrackNo)
 				if (currentTrackNo > 0 && currentZone.state.trackNo != currentTrackNo) {
 					// rotate
 					var next = document.getElementById('next-track-info'),

@@ -460,6 +460,16 @@ h4 {
 	margin-right: 20px;
 }
 
+#drag-area {
+	padding: 4px;
+	transform: translateY(-4px) translateX(-4px);
+}
+
+#drag-area:hover #position-bar-scrubber {
+	background: linear-gradient(to bottom, #4399CC, #086EAA);
+	box-shadow: 0px 0px 1px 1px #4399CC;
+}
+
 #position-bar-scrubber {
 	width: 4px;
 	height: 4px;
@@ -469,11 +479,6 @@ h4 {
 	-webkit-box-sizing: border-box;
 	vertical-align: middle;
 	display: block !important;
-}
-
-#position-bar-scrubber:hover {
-	background: linear-gradient(to bottom, #4399CC, #086EAA);
-	box-shadow: 0px 0px 1px 1px #4399CC;
 }
 
 #position-bar-scrubber.sliding {
