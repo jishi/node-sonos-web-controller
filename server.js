@@ -236,12 +236,12 @@ discovery.on('favorites', function (data) {
   socketServer.sockets.emit('favorites', data);
 });
 
-discovery.on('queue-changed', function (data) {
-  console.log('queue-changed', data);
-  delete queues[data.uuid];
-  loadQueue(data.uuid)
+discovery.on('queue-change', function (player) {
+  console.log('queue-changed', player.roomName);
+  delete queues[player.uuid];
+  loadQueue(player.uuid)
     .then(queue => {
-      socket.emit('queue', { uuid: data.uuid, queue });
+      socketServer.sockets.emit('queue', { uuid: player.uuid, queue });
     });
 });
 
