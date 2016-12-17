@@ -22,7 +22,7 @@ var GUI = {
 				});
 			}
 		} else {
-			currentTrackArt.src =  selectedZone.state.currentTrack.albumArtURI;
+			currentTrackArt.src =  selectedZone.state.currentTrack.albumArtURI || selectedZone.state.currentTrack.albumArtUri;
 		}
 		//document.getElementById('page-title').textContent = selectedZone.state.currentTrack.title + ' - Sonos Web Controller';
 		document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
