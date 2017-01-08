@@ -244,7 +244,7 @@ function renderVolumes() {
     var playerMute = masterMute.cloneNode(true);
     playerMute.id = "mute-" + player.uuid;
     playerMute.className = "mute-button";
-    playerMute.src = player.state.mute ? "/svg/mute_on.svg" : "/svg/mute_off.svg";
+    playerMute.src = player.state.mute ? "svg/mute_on.svg" : "svg/mute_off.svg";
     playerMute.dataset.id = player.uuid;
     playerName.textContent = player.roomName;
     playerVolumeBarContainer.appendChild(playerName);
@@ -323,7 +323,7 @@ function renderFavorites(favorites) {
 
 function imageErrorHandler() {
   this.removeEventListener('error', imageErrorHandler);
-  this.src = "/images/browse_missing_album_art.png";
+  this.src = "images/browse_missing_album_art.png";
 }
 
 function renderQueue(queue) {
