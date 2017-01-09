@@ -43,9 +43,6 @@ Socket.socket.on('transport-state', function (player) {
 });
 
 Socket.socket.on('group-volume', function (data) {
-
-	Sonos.players[data.uuid].groupState.volume = data.groupState.volume;
-
 	if (Socket.groupVolumeChanged instanceof Function) Socket.groupVolumeChanged(data);
 });
 

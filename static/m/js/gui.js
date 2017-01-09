@@ -9,21 +9,8 @@ var GUI = {
 
 		// Try and fetch high-res coverart.
 		var currentTrackArt = document.getElementById("current-track-art");
+		currentTrackArt.src =  selectedZone.state.currentTrack.absoluteAlbumArtUri;
 
-		if (/^x-sonos-spotify:spotify%3atrack%3a(.+)\?/.test(selectedZone.state.currentTrack.uri)) {
-			var spotifyUri = RegExp.$1;
-			if (currentTrackArt.dataset.spotifyUri != spotifyUri) {
-				HTTP.request("https://api.spotify.com/v1/tracks/" + RegExp.$1, function (res) {
-					// new coverart
-					var url = res.album.images[0].url;
-					currentTrackArt.src = url;
-					// to identify if this is already loaded
-					currentTrackArt.dataset.spotifyUri = spotifyUri;
-				});
-			}
-		} else {
-			currentTrackArt.src =  selectedZone.state.currentTrack.albumArtURI;
-		}
 		//document.getElementById('page-title').textContent = selectedZone.state.currentTrack.title + ' - Sonos Web Controller';
 		document.getElementById("track").textContent = selectedZone.state.currentTrack.title;
 		document.getElementById("artist").textContent = selectedZone.state.currentTrack.artist;
@@ -39,7 +26,7 @@ var GUI = {
 
 		if (state == 'PLAYING') {
 			playPauseButton.src = '../svg/pause.svg';
-		} else if (state === 'PAUSED_PLAYBACK' ){
+		} else if (state === 'PAUSED_PLAYBACK') {
 			playPauseButton.src = '../svg/play.svg';
 		}
 

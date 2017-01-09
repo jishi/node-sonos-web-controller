@@ -89,7 +89,7 @@
 					var nextTrack = currentZone.state.nextTrack;
 					newNext.querySelector('.track').textContent = nextTrack.title;
 					newNext.querySelector('.artist').textContent = nextTrack.artist;
-					newNext.querySelector(".track-art").src = nextTrack.albumArtURI;
+					newNext.querySelector(".track-art").src = nextTrack.absoluteAlbumArtUri;
 
 					prev.id = 'dead-track-info';
 					current.id = 'prev-track-info';
@@ -106,7 +106,7 @@
 					var nextTrack = currentZone.state.nextTrack;
 					document.getElementById("next-track-info").querySelector('.track').textContent = nextTrack.title;
 					document.getElementById("next-track-info").querySelector('.artist').textContent = nextTrack.artist;
-					document.getElementById("next-track-info").querySelector(".track-art").src = nextTrack.albumArtURI;
+					document.getElementById("next-track-info").querySelector(".track-art").src = nextTrack.absoluteAlbumArtUri;
 				}
 
 
@@ -116,7 +116,7 @@
 
 			document.getElementById("current-track-info").querySelector(".track").textContent = currentZone.state.currentTrack.title;
 			document.getElementById("current-track-info").querySelector(".artist").textContent = currentZone.state.currentTrack.artist;
-			document.getElementById("current-track-info").querySelector(".track-art").src = currentZone.state.currentTrack.albumArtURI;
+			document.getElementById("current-track-info").querySelector(".track-art").src = currentZone.state.currentTrack.absoluteAlbumArtUri;
 
 
 

@@ -16,8 +16,10 @@ Socket.transportStateChanged = function (player) {
 }
 
 Socket.groupVolumeChanged = function (data) {
+  Sonos.players[data.uuid].groupState.volume = data.newVolume;
+
   if (data.uuid == Sonos.currentState.selectedZone) {
-    GUI.masterVolume.setVolume(data.groupState.volume);
+    GUI.masterVolume.setVolume(data.newVolume);
   }
 }
 
