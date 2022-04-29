@@ -8,7 +8,7 @@
     "url": "https://github.com/jishi/node-sonos-web-controller.git"
   },
   "dependencies": {
-    "async": "^0.9.0",
+    "async": "^2.6.4",
     "node-static": "^0.7.9",
     "socket.io": "^2.2.0",
     "sonos-discovery": "https://github.com/jishi/node-sonos-discovery/archive/v1.7.3.tar.gz"
